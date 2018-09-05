@@ -1,0 +1,21 @@
+.instructions {
+  margin: 0 auto;
+  font-family: 'Lato';
+  font-size: 24px;
+  z-index: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  user-select: none;
+}
+
+.flashing {
+  animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

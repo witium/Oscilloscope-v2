@@ -9,9 +9,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <MainMenu />
-      <ControlBar />
-      <Oscilloscope />
+        <MainMenu />
+        <div className="flex-container">
+          <ControlBar />
+          <Oscilloscope width={window.innerWidth} height={window.innerHeight} />
+        </div>
       </div>
     );
   }

@@ -16,12 +16,20 @@ export default class ControlBar extends Component {
     window.removeEventListener("resize", this.handleResize);
   }
 
+  handleResize = () =>{
+    this.props.handleResize();
+    this.renderAxesLabels();
+  }
+
   renderAxesLabels = () => {
-      let rect = this.canvas.getBoundingClientRect();
+    console.log(this.props.width);
+    console.log(this.canvas.width)
+      let rect = this.props;
       // We clear the canvas to make sure we don't leave anything painted
       this.ctx.clearRect(0, 0, rect.width, rect.height);
       this.ctx.fillStyle = "#C1C5C9";
       this.ctx.fillRect(0, 0, rect.width, rect.height);
+      console.log(rect.width);
       const MINFREQ = 20;
       const MAXFREQ = 20000;
       let ticks = 4;
@@ -61,10 +69,8 @@ export default class ControlBar extends Component {
     let cssClass = 'controlbar-container'
 
     return (
-      <div className="control-canvas-container">
-        <canvas width={window.innerWidth / 4} height={window.innerHeight} ref={(c) => {
-          this.canvas = c;}}/>
-      </div>
+        <canvas width={this.props.width} height={this.props.height} ref={(c) => {
+          this.canvas = c;}} className="control-canvas"/>
     );
   }
 }

@@ -30,7 +30,10 @@ export default class Oscilloscope extends Component {
     window.removeEventListener("resize", this.handleResize);
   }
 
-
+  handleResize = () =>{
+    this.props.handleResize();
+    this.drawPureWavesCanvas();
+  }
   // Time variable
   // var t = 0;
   // var referenceComplexAmplitude;
@@ -40,9 +43,9 @@ export default class Oscilloscope extends Component {
 
   // This function creates the grid for the waves canvas
   createGrid(ctx, canvas) {
-    let canvasRect = canvas.getBoundingClientRect();
-    let canvasHeight = canvasRect.height;
-    let canvasWidth = canvasRect.width;
+    // let canvasRect = canvas.getBoundingClientRect();
+    let canvasHeight = this.props.height;
+    let canvasWidth = this.props.width;
 
     // We clear whatever is in scope and we create the grid again
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -193,8 +196,8 @@ export default class Oscilloscope extends Component {
   drawPureWavesCanvas() {
     let t = 0;
     let wavesCanvasRect = this.canvas.getBoundingClientRect();
-    let wavesCanvasHeight = wavesCanvasRect.height;
-    let wavesCanvasWidth = wavesCanvasRect.width;
+    let wavesCanvasHeight = this.props.height;
+    let wavesCanvasWidth = this.props.width;
     let numberPoints;
     let sliceWidth;
     let freqInfoMessage;
@@ -376,15 +379,15 @@ export default class Oscilloscope extends Component {
   render() {
     return (
       <div onClick={this.startOscilloscope}>
-        <canvas className="oscilloscope-canvas" width={3*window.innerWidth / 4} height={window.innerHeight} ref={(c) => {this.canvas = c;}}/>
-        <div className="instructions">
+        <canvas className="oscilloscope-canvas" width={this.props.width} height={this.props.height} ref={(c) => {this.canvas = c;}}/>
+        {/*<div className="instructions">
           {!this.state.isStarted
             ? <p className="flashing">Click or tap anywhere on the canvas to start the spectrogram</p>
             : <p>Great! Be sure to allow use of your microphone.
             You can draw on the canvas to make sound!</p>
           }
 
-        </div>
+        </div>*/}
       </div>
     );
   }

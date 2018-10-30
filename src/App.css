@@ -1,3 +1,7 @@
+.App {
+  height: 100vh;
+}
+
 .flex-container {
   /* display: flex; */
   /* flex-direction: row; */
@@ -12,4 +16,19 @@ canvas {
   left: 0%;
   touch-action: none;
   overflow: hidden;
+}
+
+.flashing {
+  animation: blinker 1.5s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

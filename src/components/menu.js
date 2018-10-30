@@ -4,6 +4,12 @@ import { Input, Menu } from 'semantic-ui-react'
 import "../styles/menu.css"
 
 class MainMenu extends Component {
+
+  switchToSpectrogram = () =>{
+    console.log("SWITCH");
+    window.location = "https://listeningtowaves.github.io/Spectrogram";
+  }
+
   render() {
     return (
       <div className="menu-container">

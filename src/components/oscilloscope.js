@@ -184,13 +184,6 @@ export default class Oscilloscope extends Component {
     ctx.globalAlpha = opacity;
   }
 
-  setLeyendVisibility(status) {
-    // document.getElementById("pure-tones-text").style.visibility = status;
-    // document.getElementById("leyend-text").style.visibility = status;
-    // document.getElementById("line-canvas").style.visibility = status;
-  }
-
-
   // Waves canvas drawing (pure waves)
   // TO DO: insert the canvas and the context as arguments so that if one changes, we do not have to be changing everything in the function.
   drawPureWavesCanvas() {

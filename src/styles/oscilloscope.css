@@ -10,15 +10,6 @@
   user-select: none;
 }
 
-.flashing {
-  animation: blinker 1.5s linear infinite;
-}
-
-@keyframes blinker {
-  50% {
-    opacity: 0;
-  }
-}
 
 .oscilloscope-canvas {
   left: 25%;

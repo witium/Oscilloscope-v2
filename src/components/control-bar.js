@@ -4,6 +4,7 @@ import Tone from 'tone';
 import generateScale from '../util/generateScale';
 
 import { getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace } from "../util/conversions";
+import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLORTOTAL} from "../util/colors";
 const ticks = 7;
 const yLabelOffset = 5;
 const NUM_VOICES = 6;
@@ -18,9 +19,9 @@ export default class ControlBar extends Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
-    // this.onTouchStart = this.onTouchStart.bind(this);
-    // this.onTouchEnd = this.onTouchEnd.bind(this);
-    // this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
     this.state = {
       mouseDown: false,
       touch: false,
@@ -146,11 +147,12 @@ export default class ControlBar extends Component {
 
     this.ctx.clearRect(0, 0, this.props.width, this.props.height); // Clears canvas for redraw of label
     this.renderCanvas();
-    this.label(freqs[0], pos.x, pos.y); // Labels the point
+    this.label(freqs[0], pos.x, pos.y, 0); // Labels the point
     this.setState({mouseDown: true});
     if(this.props.noteLinesOn){
       // this.renderNoteLines();
     }
+    this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0}]);
 
   }
 
@@ -183,11 +185,14 @@ export default class ControlBar extends Component {
       // Clears the label
       this.ctx.clearRect(0, 0, this.props.width, this.props.height);
       this.renderCanvas();
-      this.label(freqs[0], pos.x, pos.y);
+      this.label(freqs[0], pos.x, pos.y, 0);
       if(this.props.noteLinesOn){
         // this.renderNoteLines();
       }
+      this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0}]);
+
     }
+
 
   }
 
@@ -207,7 +212,9 @@ export default class ControlBar extends Component {
       if(this.props.noteLinesOn){
         // this.renderNoteLines();
       }
+      this.props.onAudioEvent([{}]);
     }
+
 
   }
 
@@ -227,9 +234,131 @@ export default class ControlBar extends Component {
       if(this.props.noteLinesOn){
         // this.renderNoteLines();
       }
+      this.props.onAudioEvent([{}]);
+    }
+
+
+  }
+
+  onTouchStart(e){
+    e.preventDefault(); // Always need to prevent default browser choices
+    e.stopPropagation();
+    if(e.touches.length > NUM_VOICES ){
+      return;
+    }
+    // For each finger, do the same as above in onMouseDown
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      let pos = getMousePos(this.canvas, e.changedTouches[i]);
+      let yPercent = 1 - pos.y / this.props.height;
+      let xPercent = 1 - pos.x / this.props.width;
+      let gain = getGain(xPercent);
+      let freq = this.getFreq(yPercent)[0];
+      let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
+      this.setState({touch: true});
+      this.synths[newVoice].volume.value = gain;
+      this.synths[newVoice].triggerAttack(freq);
+
+      this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+      this.renderCanvas();
+    }
+
+    let audioEvent = [];
+    for (let i = 0; i < e.touches.length; i++) {
+      let pos = getMousePos(this.canvas, e.touches[i]);
+      let xPercent = 1 - pos.x / this.props.width;
+      let yPercent = 1 - pos.y / this.props.height;
+      let freq = this.getFreq(yPercent)[0];
+      let gain = getGain(xPercent);
+      this.label(freq, pos.x, pos.y, e.touches[i].identifier % NUM_VOICES );
+      audioEvent.push({freq: freq, volume: gain, color: e.touches[i].identifier % NUM_VOICES})
+    }
+    this.props.onAudioEvent(audioEvent);
+
+  }
+
+  onTouchMove(e){
+    e.preventDefault(); // Always need to prevent default browser choices
+    // Check if more fingers were moved than allowed
+    if(e.changedTouches.length > NUM_VOICES ){
+      return;
+    }
+    let {width, height} = this.props;
+    // If touch is pressed (Similar to mouseDown = true, although there should never be a case where this is false)
+    if (this.state.touch) {
+      // For each changed touch, do the same as onMouseMove
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        let pos = getMousePos(this.canvas, e.changedTouches[i]);
+        let yPercent = 1 - pos.y / this.props.height;
+        let xPercent = 1 - pos.x / this.props.width;
+        // Determines index of the synth needing to change volume/frequency
+        let index = e.changedTouches[i].identifier;
+        // : index;
+
+        let gain = getGain(xPercent);
+        let freq = this.getFreq(yPercent)[0];
+          // Deals with rounding issues with the note lines
+        let oldFreq = this.synths[index].frequency.value;
+        for (let note in this.frequencies){
+          if (Math.abs(this.frequencies[note] - oldFreq) < 0.1*oldFreq){
+            oldFreq = this.frequencies[note]
+          }
+        }
+        // These are the same as onMouseMove
+        this.goldIndices.splice(index - 1, 1);
+          // Ramps to new Frequency and Volume
+        this.synths[index].frequency.exponentialRampToValueAtTime(freq, this.props.context.currentTime+RAMPVALUE);
+        // Ramp to new Volume
+        this.synths[index].volume.exponentialRampToValueAtTime(gain,
+          this.props.context.currentTime+RAMPVALUE);
+      }
+      //Redraw Labels
+      this.ctx.clearRect(0, 0, width, height);
+      this.renderCanvas();
+      let audioEvent = [];
+
+      for (let i = 0; i < e.touches.length; i++) {
+        let pos = getMousePos(this.canvas, e.touches[i]);
+        let xPercent = 1 - pos.x / this.props.width;
+        let yPercent = 1 - pos.y / this.props.height;
+        let freq = this.getFreq(yPercent)[0];
+        let gain = getGain(xPercent);
+        this.label(freq, pos.x, pos.y, e.touches[i].identifier % NUM_VOICES );
+        audioEvent.push({freq: freq, volume: gain, color: e.touches[i].identifier % NUM_VOICES})
+      }
+      this.props.onAudioEvent(audioEvent);
     }
 
   }
+
+  onTouchEnd(e) {
+    e.preventDefault(); // Always need to prevent default browser choices
+    let {width, height} = this.props;
+    // Check if there are more touches changed than on the screen and release everything (mostly as an fail switch)
+    if (e.changedTouches.length === e.touches.length + 1) {
+      for (var i = 0; i < NUM_VOICES; i++) {
+          this.synths[i].triggerRelease();
+      }
+      this.goldIndices = []
+      this.ctx.clearRect(0, 0, width, height);
+      this.renderCanvas();
+      this.props.onAudioEvent([{}]);
+      this.setState({touch: false, currentVoice: -1});
+    } else {
+      // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        let pos = getMousePos(this.canvas, e.changedTouches[i]);
+        let index = e.changedTouches[i].identifier % NUM_VOICES;
+          this.goldIndices.splice(index, 1);
+          this.synths[index].triggerRelease();
+
+          this.ctx.clearRect(0, 0, width, height);
+          this.renderCanvas();
+        }
+      }
+      // Fix This
+      this.props.onAudioEvent([{}]);
+
+    }
 
   // Helper function that determines the frequency to play based on the mouse/finger position
   // Also deals with snapping it to a scale if scale mode is on
@@ -389,7 +518,7 @@ export default class ControlBar extends Component {
   }
 
   // Helper method that generates a label for the frequency or the scale note
-label(freq, x, y) {
+label(freq, x, y, index) {
   const offset = 10;
   this.ctx.font = '20px Inconsolata';
   this.ctx.fillStyle = 'white';
@@ -403,7 +532,30 @@ label(freq, x, y) {
   const startingAngle = 0;
   const endingAngle = 2 * Math.PI;
   const radius = 10;
-  const color = 'rgb(255, 255, 0)';
+  // const color = 'rgb(255, 255, 0)';
+  let color;
+  switch (index) {
+    case 0:
+      color = WAVECOLOR1;
+      break;
+    case 1:
+      color = WAVECOLOR2;
+      break;
+    case 2:
+      color = WAVECOLOR3;
+      break;
+    case 3:
+      color = WAVECOLOR4;
+      break;
+    case 4:
+      color = WAVECOLOR5;
+      break;
+    case 5:
+      color = WAVECOLOR1;
+      break;
+
+  }
+
   this.ctx.beginPath();
   this.ctx.arc(x, y, radius, startingAngle, endingAngle);
   this.ctx.fillStyle = color;
@@ -424,6 +576,9 @@ label(freq, x, y) {
         onMouseMove={this.onMouseMove}
         onMouseUp={this.onMouseUp}
         onMouseOut={this.onMouseOut}
+        onTouchStart={this.onTouchStart}
+        onTouchMove={this.onTouchMove}
+        onTouchEnd={this.onTouchEnd}
         ref={(c) => {
           this.canvas = c;}} className="control-canvas"/>
     );

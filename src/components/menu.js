@@ -19,9 +19,9 @@ class MainMenu extends Component {
             <button className="function-switch-button" onClick={this.switchToSpectrogram}>Spectrogram</button>
           </Menu.Item>
 
-          <Menu.Item position='right'>
+          {/*<Menu.Item position='right'>
             <Input action={{ type: 'submit', content: 'Go' }} placeholder='Navigate to...' />
-          </Menu.Item>
+          </Menu.Item>*/}
         </Menu >
       </div>
     );

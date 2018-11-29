@@ -1,12 +1,9 @@
-import React, { Component } from 'react'
-import "../styles/oscilloscope.css"
+import React, { Component } from 'react';
+import "../styles/oscilloscope.css";
+import {dbToLinear} from "../util/conversions";
 
-const WAVECOLOR1 = 'rgb(246, 109, 244)'; // Light blue
-const WAVECOLOR2 = 'rgb(66, 229, 244)'; // Violet
-const WAVECOLOR3 = 'rgb(101, 255, 0)'; // Light green
-const WAVECOLOR4 = 'rgb(255, 140, 0)'; // Orange
-const WAVECOLOR5 = 'rgb(2, 10, 185)'; // Dark blue
-const WAVECOLORTOTAL = 'rgb(255, 255, 0)'; // Yellow
+import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLORTOTAL} from "../util/colors";
+
 const frequency = [0];
 const amplitude = [0];
 const nFingers = 0;
@@ -30,10 +27,159 @@ export default class Oscilloscope extends Component {
     window.removeEventListener("resize", this.handleResize);
   }
 
+
   handleResize = () =>{
     this.props.handleResize();
     this.drawPureWavesCanvas();
   }
+
+  renderCanvas = (signals) =>{
+    this.drawPureWavesCanvas();
+    let t = 0;
+    const numberPoints = 2048 * 16;
+    const sliceWidth = this.props.width / numberPoints;
+
+    for (let signal of signals){
+
+      // We get the x-distance between each point by dividing the total width by the number of points
+      let color;
+      switch (signal.color) {
+        case 0:
+          color = WAVECOLOR1;
+          break;
+        case 1:
+          color = WAVECOLOR2;
+          break;
+        case 2:
+          color = WAVECOLOR3;
+          break;
+        case 3:
+          color = WAVECOLOR4;
+          break;
+        case 4:
+          color = WAVECOLOR5;
+          break;
+        case 5:
+          color = WAVECOLOR1;
+          break;
+        default:
+          color = WAVECOLOR1;
+          break;
+        }
+      /*
+      let maxHeight = calculateMaximumPureSingleWave(numberPoints, sliceWidth);
+      let scaleProportion = calculateProportionWave(maxHeight*2);
+      */
+
+      // We draw the blue wave line
+      this.ctx.beginPath();
+      if(signals.length == 1){
+        this.setStyleWidthOpacity(this.ctx, color, '5', 1);
+      } else {
+        this.setStyleWidthOpacity(this.ctx, color, '1', 1);
+      }
+
+      // x starts at 0 (first point is at 0)
+      let x = 0;
+      // For each of the points that we have
+      let volume = dbToLinear(signal.volume);
+      if(isNaN(volume)){
+        volume = 0;
+      }
+      let wavelength = 100 * this.props.height / signal.freq;
+      let v = wavelength / signal.freq;
+      // v = 0;
+      let k = 2 * Math.PI / wavelength;
+      for (let i = 0; i < numberPoints; i++) {
+        let y = 0;
+        // Calculate the location of the point using the equation of the wave.
+        y+= volume * 350 * Math.cos(k * (x + v * t))
+        // if (signal.volume < 0) {
+        //   y += (0 * 350 * Math.cos(k * (x + v * t)));
+        // } else {
+        //   y += (amplitude[0] * 350 * Math.cos(k * (x + v * t)));
+        // }
+
+        // y *= scaleProportion;
+
+        y += this.props.height / 2;
+
+        // We draw the point in the canvas
+        if (i === 0) {
+          this.ctx.moveTo(x, y);
+        } else {
+          this.ctx.lineTo(x, y);
+
+          // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
+          // wavesCanvasCtx.fillRect(x,y,1,1);
+        }
+        // x moves the x-distance to the right
+        x += sliceWidth;
+      }
+      this.ctx.stroke();
+    }
+
+    if(signals.length > 1){
+      // Draw combined wave
+      this.ctx.beginPath();
+      this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
+
+      // x starts at 0 (first point is at 0)
+      let x = 0;
+      // For each of the points that we have
+
+      // let volume = dbToLinear(signal.volume);
+      let volume = 1;
+      if(isNaN(volume)){
+        volume = 0;
+      }
+      let t = 0;
+      //let wavelength = 100 * this.props.height / signal.freq;
+      //let v = wavelength / signal.freq;
+      //let k = 2 * Math.PI / wavelength;
+      for (let i = 0; i < numberPoints; i++) {
+        let y = 0;
+          for (let signal of signals){
+            let wavelength = 100 * this.props.height / signal.freq;
+            let v = wavelength / signal.freq;
+            let k = 2 * Math.PI / wavelength;
+            let volume = dbToLinear(signal.volume);
+            if(isNaN(volume)){
+              volume = 0;
+            }
+            y += (volume * 350 * Math.cos(k * (x + v * t)));
+            if(i == 0){
+            }
+        }
+        //let y = 0;
+        // Calculate the location of the point using the equation of the wave.
+        //y+= volume * 350 * Math.cos(k * (x + v * t))
+        // if (signal.volume < 0) {
+        //   y += (0 * 350 * Math.cos(k * (x + v * t)));
+        // } else {
+        //   y += (amplitude[0] * 350 * Math.cos(k * (x + v * t)));
+        // }
+
+        // y *= scaleProportion;
+
+        y += this.props.height / 2;
+
+        // We draw the point in the canvas
+        if (i === 0) {
+          this.ctx.moveTo(x, y);
+        } else {
+          this.ctx.lineTo(x, y);
+
+          // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
+          // wavesCanvasCtx.fillRect(x,y,1,1);
+        }
+        // x moves the x-distance to the right
+        x += sliceWidth;
+      }
+      this.ctx.stroke();
+    }
+  }
+
   // Time variable
   // var t = 0;
   // var referenceComplexAmplitude;
@@ -202,164 +348,159 @@ export default class Oscilloscope extends Component {
     // if (AFFECTTIME) {
     //   t++;
     // }
-
-    // In case we are in mouse mode (or nothing is being clicked/touched)
-    if (true) {
-      numberPoints = 2048 * 16;
-      // We get the x-distance between each point by dividing the total width by the number of points
-      sliceWidth = wavesCanvasWidth / numberPoints;
-
-      /*
-      let maxHeight = calculateMaximumPureSingleWave(numberPoints, sliceWidth);
-      let scaleProportion = calculateProportionWave(maxHeight*2);
-      */
-
-      // We draw the blue wave line
-      this.ctx.beginPath();
-      this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
-
-      // x starts at 0 (first point is at 0)
-      let x = 0;
-      // For each of the points that we have
-      for (let i = 0; i < numberPoints; i++) {
-        let y = 0;
-        // Calculate the location of the point using the equation of the wave.
-        let wavelength = 100 * wavesCanvasHeight / frequency[0];
-        let v = wavelength / frequency[0];
-        let k = 2 * Math.PI / wavelength;
-        if (amplitude[0] < 0) {
-          y += (0 * 350 * Math.cos(k * (x + v * t)));
-        } else {
-          y += (amplitude[0] * 350 * Math.cos(k * (x + v * t)));
-        }
-
-        // y *= scaleProportion;
-
-        y += wavesCanvasHeight / 2;
-
-        // We draw the point in the canvas
-        if (i === 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-
-          // this.ctx.fillStyle = WAVECOLORTOTAL;
-          // this.ctx.fillRect(x,y,1,1);
-        }
-        // x moves the x-distance to the right
-        x += sliceWidth;
-      }
-      this.ctx.stroke();
-    } else {
-      // In case we are in touch mode
-      /* If there is more than 1 finger pressed, we will draw a thick yellow line
-      which will be the result of adding all the other waves */
-      numberPoints = 2048 * 16 / (nFingers + 1);
-      sliceWidth = wavesCanvasWidth / numberPoints;
-
-      /*
-      let maxHeight = calculateMaximumPureMultipleWaves(numberPoints, sliceWidth);
-      let scaleProportion = calculateProportionWave(maxHeight*2);
-      */
-
-      this.ctx.beginPath();
-      this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
-      let x = 0;
-      for (let i = 0; i < numberPoints; i++) {
-        let y = 0;
-        // Add the result of each of the waves in position x
-        for (let j = 0; j < nFingers; j++) {
-          let wavelength = 100 * wavesCanvasHeight / frequency[j];
-          let v = wavelength / frequency[j];
-          let k = 2 * Math.PI / wavelength;
-          if (amplitude[j] < 0) {
-            y += (0 * 350 * Math.cos(k * (x + v * t)));
-          } else {
-            y += (amplitude[j] * 350 * Math.cos(k * (x + v * t)));
-          }
-        }
-
-        // y *= scaleProportion;
-
-        y += wavesCanvasHeight / 2;
-        if (i === 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-        }
-        x += sliceWidth;
-      }
-      this.ctx.stroke();
-
-      // Now, we will draw each of the thinner lines for each finger.
-      for (let j = 0; j < nFingers; j++) {
-        let x = 0;
-        this.ctx.beginPath();
-        // If we have only 1 finger, the line will still be thick
-        if (nFingers === 1) {
-          this.ctx.globalAlpha = 1;
-          this.ctx.lineWidth = '1.3';
-        } else {
-          this.ctx.globalAlpha = opacityLevel;
-          this.ctx.lineWidth = '2';
-        }
-
-        // In case of the finger number, we will choose one color and write its frequency
-        if (j === 0) {
-          this.ctx.strokeStyle = WAVECOLOR1;
-          freqInfoMessage = "<span style='color: " + WAVECOLOR1 + "'>" + Math.round(frequency[j]) + "</span>";
-        } else if (j === 1) {
-          this.ctx.strokeStyle = WAVECOLOR2;
-          freqInfoMessage += " <span style='color: " + WAVECOLOR2 + "'>" + Math.round(frequency[j]) + "</span>";
-        } else if (j === 2) {
-          this.ctx.strokeStyle = WAVECOLOR3;
-          freqInfoMessage += " <span style='color: " + WAVECOLOR3 + "'>" + Math.round(frequency[j]) + "</span>";
-        } else if (j === 3) {
-          this.ctx.strokeStyle = WAVECOLOR4;
-          freqInfoMessage += " <span style='color: " + WAVECOLOR4 + "'>" + Math.round(frequency[j]) + "</span>";
-        } else {
-          this.ctx.strokeStyle = WAVECOLOR5;
-          freqInfoMessage += " <span style='color: " + WAVECOLOR5 + "'>" + Math.round(frequency[j]) + "</span>";
-        }
-        for (let i = 0; i < numberPoints; i++) {
-          let y = 0;
-          let wavelength = 100 * wavesCanvasHeight / frequency[j];
-          let v = wavelength / frequency[j];
-          let k = 2 * Math.PI / wavelength;
-          if (amplitude[j] < 0) {
-            y += (0 * 350 * Math.cos(k * (x + v * t)));
-          } else {
-            y += (amplitude[j] * 350 * Math.cos(k * (x + v * t)));
-          }
-
-          // y *= scaleProportion;
-
-          y += wavesCanvasHeight / 2;
-          if (i === 0) {
-            this.ctx.moveTo(x, y);
-          } else {
-            this.ctx.lineTo(x, y);
-          }
-          x += sliceWidth;
-        }
-        this.ctx.stroke();
-      }
-    }
-    // Write the message in case of the number of fingers we have
-    // if (nFingers < 1) {
-    //   if (frequency[0] === 1) {
-    //     freqInfoMessage = "";
-    //     this.setLeyendVisibility('hidden');
-    //   } else {
-    //     freqInfoMessage = Math.round(frequency[0]) + " Hz (cycles/second)";
-    //     setLeyendVisibility('visible');
+    //
+    // // In case we are in mouse mode (or nothing is being clicked/touched)
+    // if (true) {
+    //   numberPoints = 2048 * 16;
+    //   // We get the x-distance between each point by dividing the total width by the number of points
+    //   sliceWidth = wavesCanvasWidth / numberPoints;
+    //
+    //   // We draw the blue wave line
+    //   this.ctx.beginPath();
+    //   this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
+    //
+    //   // x starts at 0 (first point is at 0)
+    //   let x = 0;
+    //   // For each of the points that we have
+    //   for (let i = 0; i < numberPoints; i++) {
+    //     let y = 0;
+    //     // Calculate the location of the point using the equation of the wave.
+    //     let wavelength = 100 * wavesCanvasHeight / frequency[0];
+    //     let v = wavelength / frequency[0];
+    //     let k = 2 * Math.PI / wavelength;
+    //     if (amplitude[0] < 0) {
+    //       y += (0 * 350 * Math.cos(k * (x + v * t)));
+    //     } else {
+    //       y += (amplitude[0] * 350 * Math.cos(k * (x + v * t)));
+    //     }
+    //
+    //     // y *= scaleProportion;
+    //
+    //     y += wavesCanvasHeight / 2;
+    //
+    //     // We draw the point in the canvas
+    //     if (i === 0) {
+    //       this.ctx.moveTo(x, y);
+    //     } else {
+    //       this.ctx.lineTo(x, y);
+    //
+    //       // this.ctx.fillStyle = WAVECOLORTOTAL;
+    //       // this.ctx.fillRect(x,y,1,1);
+    //     }
+    //     // x moves the x-distance to the right
+    //     x += sliceWidth;
     //   }
+    //   this.ctx.stroke();
     // } else {
-    //   freqInfoMessage += " <span style='color: rgb(255, 255, 255)'>Hz</span>";
-    //   setLeyendVisibility('visible');
+    //   // In case we are in touch mode
+    //   /* If there is more than 1 finger pressed, we will draw a thick yellow line
+    //   which will be the result of adding all the other waves */
+    //   numberPoints = 2048 * 16 / (nFingers + 1);
+    //   sliceWidth = wavesCanvasWidth / numberPoints;
+    //
+    //   /*
+    //   let maxHeight = calculateMaximumPureMultipleWaves(numberPoints, sliceWidth);
+    //   let scaleProportion = calculateProportionWave(maxHeight*2);
+    //   */
+    //
+    //   this.ctx.beginPath();
+    //   this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
+    //   let x = 0;
+    //   for (let i = 0; i < numberPoints; i++) {
+    //     let y = 0;
+    //     // Add the result of each of the waves in position x
+    //     for (let j = 0; j < nFingers; j++) {
+    //       let wavelength = 100 * wavesCanvasHeight / frequency[j];
+    //       let v = wavelength / frequency[j];
+    //       let k = 2 * Math.PI / wavelength;
+    //       if (amplitude[j] < 0) {
+    //         y += (0 * 350 * Math.cos(k * (x + v * t)));
+    //       } else {
+    //         y += (amplitude[j] * 350 * Math.cos(k * (x + v * t)));
+    //       }
+    //     }
+    //
+    //     // y *= scaleProportion;
+    //
+    //     y += wavesCanvasHeight / 2;
+    //     if (i === 0) {
+    //       this.ctx.moveTo(x, y);
+    //     } else {
+    //       this.ctx.lineTo(x, y);
+    //     }
+    //     x += sliceWidth;
+    //   }
+    //   this.ctx.stroke();
+    //
+    //   // Now, we will draw each of the thinner lines for each finger.
+    //   for (let j = 0; j < nFingers; j++) {
+    //     let x = 0;
+    //     this.ctx.beginPath();
+    //     // If we have only 1 finger, the line will still be thick
+    //     if (nFingers === 1) {
+    //       this.ctx.globalAlpha = 1;
+    //       this.ctx.lineWidth = '1.3';
+    //     } else {
+    //       this.ctx.globalAlpha = opacityLevel;
+    //       this.ctx.lineWidth = '2';
+    //     }
+    //
+    //     // In case of the finger number, we will choose one color and write its frequency
+    //     if (j === 0) {
+    //       this.ctx.strokeStyle = WAVECOLOR1;
+    //       freqInfoMessage = "<span style='color: " + WAVECOLOR1 + "'>" + Math.round(frequency[j]) + "</span>";
+    //     } else if (j === 1) {
+    //       this.ctx.strokeStyle = WAVECOLOR2;
+    //       freqInfoMessage += " <span style='color: " + WAVECOLOR2 + "'>" + Math.round(frequency[j]) + "</span>";
+    //     } else if (j === 2) {
+    //       this.ctx.strokeStyle = WAVECOLOR3;
+    //       freqInfoMessage += " <span style='color: " + WAVECOLOR3 + "'>" + Math.round(frequency[j]) + "</span>";
+    //     } else if (j === 3) {
+    //       this.ctx.strokeStyle = WAVECOLOR4;
+    //       freqInfoMessage += " <span style='color: " + WAVECOLOR4 + "'>" + Math.round(frequency[j]) + "</span>";
+    //     } else {
+    //       this.ctx.strokeStyle = WAVECOLOR5;
+    //       freqInfoMessage += " <span style='color: " + WAVECOLOR5 + "'>" + Math.round(frequency[j]) + "</span>";
+    //     }
+    //     for (let i = 0; i < numberPoints; i++) {
+    //       let y = 0;
+    //       let wavelength = 100 * wavesCanvasHeight / frequency[j];
+    //       let v = wavelength / frequency[j];
+    //       let k = 2 * Math.PI / wavelength;
+    //       if (amplitude[j] < 0) {
+    //         y += (0 * 350 * Math.cos(k * (x + v * t)));
+    //       } else {
+    //         y += (amplitude[j] * 350 * Math.cos(k * (x + v * t)));
+    //       }
+    //
+    //       // y *= scaleProportion;
+    //
+    //       y += wavesCanvasHeight / 2;
+    //       if (i === 0) {
+    //         this.ctx.moveTo(x, y);
+    //       } else {
+    //         this.ctx.lineTo(x, y);
+    //       }
+    //       x += sliceWidth;
+    //     }
+    //     this.ctx.stroke();
+    //   }
     // }
-    // document.getElementById("freq-info").innerHTML = freqInfoMessage;
-    // drawTimeStamp = Date.now();
+    // // Write the message in case of the number of fingers we have
+    // // if (nFingers < 1) {
+    // //   if (frequency[0] === 1) {
+    // //     freqInfoMessage = "";
+    // //     this.setLeyendVisibility('hidden');
+    // //   } else {
+    // //     freqInfoMessage = Math.round(frequency[0]) + " Hz (cycles/second)";
+    // //     setLeyendVisibility('visible');
+    // //   }
+    // // } else {
+    // //   freqInfoMessage += " <span style='color: rgb(255, 255, 255)'>Hz</span>";
+    // //   setLeyendVisibility('visible');
+    // // }
+    // // document.getElementById("freq-info").innerHTML = freqInfoMessage;
+    // // drawTimeStamp = Date.now();
   };
 
 
@@ -373,14 +514,6 @@ export default class Oscilloscope extends Component {
     return (
       <div onClick={this.startOscilloscope}>
         <canvas className="oscilloscope-canvas" width={this.props.width} height={this.props.height} ref={(c) => {this.canvas = c;}}/>
-        {/*<div className="instructions">
-          {!this.state.isStarted
-            ? <p className="flashing">Click or tap anywhere on the canvas to start the spectrogram</p>
-            : <p>Great! Be sure to allow use of your microphone.
-            You can draw on the canvas to make sound!</p>
-          }
-
-        </div>*/}
       </div>
     );
   }

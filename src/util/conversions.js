@@ -11,9 +11,14 @@ function convertToLog(value, originalMin, originalMax, newMin, newMax){
 function convertToLinear(value, originalMin, originalMax, newMin, newMax){
   //solving y=Ae^bx for x, x=ln(y-A)/b
       let b = Math.log(newMax / newMin)/(originalMax-originalMin);
+      console.log(b)
       let a = newMax /  Math.pow(Math.E,  originalMax* b);
       let x = Math.log(value - a)/b;
     return x;
+}
+
+function dbToLinear(value){
+  return Math.pow(10, value/20);
 }
 
 function getMousePos(canvas, evt) {
@@ -73,4 +78,4 @@ function logspace(start, stop, n, N) {
 }
 
 
-export {convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace}
+export {convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear}

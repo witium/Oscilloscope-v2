@@ -10,6 +10,7 @@ let audioContext = null;
 class App extends Component {
   constructor(){
     super();
+    this.oscilloscope = React.createRef();
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -26,6 +27,12 @@ startOscilloscope = () => {
   }
 }
 
+onAudioEvent = (signals) =>{
+
+  this.oscilloscope.current.renderCanvas(signals)
+}
+
+
 
 
   render() {
@@ -34,8 +41,13 @@ startOscilloscope = () => {
         <MainMenu />
         {this.state.started ?
           <React.Fragment>
-            <ControlBar width={this.state.width/4} height={this.state.height} handleResize={this.handleResize} context={audioContext}/>
-            <Oscilloscope width={3*this.state.width/4} height={this.state.height} handleResize={this.handleResize} />
+            <ControlBar width={this.state.width/4} height={this.state.height} handleResize={this.handleResize} context={audioContext} onAudioEvent={this.onAudioEvent}/>
+            <Oscilloscope
+            width={3*this.state.width/4}
+            height={this.state.height}
+            handleResize={this.handleResize}
+            renderSignals={this.state.renderSignals}
+            ref={this.oscilloscope}/>
           </React.Fragment>:
           <p className="flashing">Click or tap anywhere on the canvas to start the signal generator</p>
         }

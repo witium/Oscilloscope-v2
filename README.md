@@ -4,7 +4,7 @@ An interactive Oscilloscope web app developed with Tone.js and React.
 
 ## Requirements
 
-For development, you will only need Node.js installed on your environement.
+For development, you will only need Node.js installed on your environment.
 
 ## Installation
 
@@ -17,6 +17,6 @@ For development, you will only need Node.js installed on your environement.
     $ npm start
 
 ## Maintainers
-
-* **Saurabh Kanhegaonkar** - *Web Developer* 
+* **Matthew Rice** - *Web Developer*
+* **Saurabh Kanhegaonkar** - *Web Developer*
 * **Victor Minces** - *Postdoctoral Researcher at UC San Diego*

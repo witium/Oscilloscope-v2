@@ -18,6 +18,27 @@ canvas {
   overflow: hidden;
 }
 
+.sustain-button {
+  z-index: 10;
+  position: absolute;
+  bottom: 5px;
+  right: 1%;
+  width: 7em;
+
+}
+
+.timbre-button {
+  z-index: 10;
+  position: absolute;
+  bottom: 5px;
+  right: 9%;
+  width: 7em;
+}
+
+.timbre-button:active {
+  background-color: "red"!important;
+}
+
 .flashing {
   animation: blinker 1.5s linear infinite;
   position: absolute;

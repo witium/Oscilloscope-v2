@@ -279,6 +279,7 @@ export default class ControlBar extends Component {
   }
 
   onTouchStart(e){
+    console.log("START")    
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     if(e.touches.length > NUM_VOICES ){
@@ -358,6 +359,7 @@ export default class ControlBar extends Component {
   onTouchMove(e){
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
+    console.log("MOVE")
     // Check if more fingers were moved than allowed
     if(e.originalEvent.changedTouches.length > NUM_VOICES ){
       return;

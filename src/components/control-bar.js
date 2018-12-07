@@ -359,7 +359,7 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     // Check if more fingers were moved than allowed
-    if(e.changedTouches.length > NUM_VOICES ){
+    if(e.originalEvent.changedTouches.length > NUM_VOICES ){
       return;
     }
     let resolutionMax = 20000;
@@ -401,7 +401,7 @@ export default class ControlBar extends Component {
         this.ctx.clearRect(0, 0, width, height);
         this.renderCanvas();
 
-        for (let i = 0; i < e.touches.length; i++) {
+        for (let i = 0; i < e.originalEvent.touches.length; i++) {
           let pos = getMousePos(this.canvas, e.touches[i]);
           let xPercent = 1 - pos.x / this.props.width;
           let yPercent = 1 - pos.y / this.props.height;

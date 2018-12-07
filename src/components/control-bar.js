@@ -28,6 +28,7 @@ export default class ControlBar extends Component {
       feedback: false,
       amOn: false,
       fmOn: false,
+      sustainFreq: false
     }
   }
 
@@ -128,6 +129,7 @@ export default class ControlBar extends Component {
     window.removeEventListener("resize", this.handleResize);
   }
 
+
   handleResize = () =>{
     this.props.handleResize();
     this.renderCanvas();
@@ -189,7 +191,9 @@ export default class ControlBar extends Component {
         this.synths[0].volume.value = gain;
       } else {
         // Ramps to new Frequency and Volume
-        this.synths[0].frequency.exponentialRampToValueAtTime(freqs[0], this.props.context.currentTime+RAMPVALUE);
+        if(!this.props.sustainFreq){
+          this.synths[0].frequency.exponentialRampToValueAtTime(freqs[0], this.props.context.currentTime+RAMPVALUE);
+        }
         // Ramp to new Volume
         this.synths[0].volume.exponentialRampToValueAtTime(gain,
           this.props.context.currentTime+RAMPVALUE);
@@ -225,10 +229,10 @@ export default class ControlBar extends Component {
   onMouseUp(e) {
     e.preventDefault(); // Always need to prevent default browser choices
     // Only need to trigger release if synth exists (a.k.a mouse is down)
-    if (this.state.mouseDown && !this.props.sustain) {
+    if (this.state.mouseDown && !this.props.sustainFreq) {
       this.synths[0].triggerRelease(); // Relase frequency, volume goes to -Infinity
       if(this.props.timbreType === "Complex"){
-        this.releaseAll();
+        this.releaseAll(true);
       }
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
@@ -243,6 +247,9 @@ export default class ControlBar extends Component {
       }
       this.props.onAudioEvent([{}]);
     }
+    if(this.props.sustainFreq){
+      this.setState({sustainFreq: true});
+    }
 
 
   }
@@ -250,14 +257,14 @@ export default class ControlBar extends Component {
   onMouseOut(e) {
     e.preventDefault(); // Always need to prevent default browser choices
     // Only need to trigger release if synth exists (a.k.a mouse is down)
-    if (this.state.mouseDown && !this.props.sustain) {
+    if (this.state.mouseDown && !this.props.sustainFreq) {
       this.synths[0].triggerRelease(); // Relase frequency, volume goes to -Infinity
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
       this.setState({mouseDown: false });
       this.goldIndices = [];
       if(this.props.timbreType === "Complex"){
-        this.releaseAll();
+        this.releaseAll(true);
       }
       // Clears the label
       this.ctx.clearRect(0, 0, this.props.width, this.props.height);
@@ -454,12 +461,12 @@ export default class ControlBar extends Component {
 
   onTouchEnd(e) {
     e.preventDefault(); // Always need to prevent default browser choices
-    if(!this.props.sustain){
+    if(!this.props.sustainFreq){
       let {width, height} = this.props;
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
         if(this.props.timbreType === "Complex"){
           this.synths[0].triggerRelease();
-          this.releaseAll();
+          this.releaseAll(true);
         } else {
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
@@ -681,13 +688,18 @@ label(freq, x, y, index) {
   }
 }
 
-releaseAll(){
-    for (let i = 1; i < NUM_VOICES; i++) {
+releaseAll(complex){
+  let i = 0;
+  if(complex){
+    i = 1;
+  }
+    for (; i < NUM_VOICES; i++) {
       this.synths[i].triggerRelease();
     }
     this.ctx.clearRect(0, 0, this.props.width, this.props.height);
     this.renderCanvas();
     this.props.onAudioEvent([{}]);
+    this.setState({sustainFreq: false, touch: false, mouseDown: false});
 }
 
 generateComplexWeights(){

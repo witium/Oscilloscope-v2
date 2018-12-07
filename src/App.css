@@ -21,7 +21,23 @@ canvas {
 .sustain-button {
   z-index: 10;
   position: absolute;
-  bottom: 5px;
+  bottom: 0.5%;
+  right: 1%;
+  width: 7em;
+
+}
+.lock-freq-button {
+  z-index: 10;
+  position: absolute;
+  bottom: 7%;
+  right: 1%;
+  width: 7em;
+
+}
+.lock-amp-button {
+  z-index: 10;
+  position: absolute;
+  bottom: 16%;
   right: 1%;
   width: 7em;
 
@@ -30,7 +46,7 @@ canvas {
 .timbre-button {
   z-index: 10;
   position: absolute;
-  bottom: 5px;
+  bottom: 0.5%;;
   right: 9%;
   width: 7em;
 }

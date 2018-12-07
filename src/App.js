@@ -19,7 +19,7 @@ class App extends Component {
       width: window.innerWidth,
       height: window.innerHeight,
       started: false,
-      sustain: false,
+      sustainFreq: false,
       timbre: false,
       timbreType: 'Pure'
     }
@@ -39,11 +39,11 @@ onAudioEvent = (signals) =>{
   this.oscilloscope.current.renderCanvas(signals)
 }
 
-handleSustainToggle = () => {
-  if(this.state.sustain){
-    this.controlbar.current.releaseAll();
+handlesustainFreqToggle = () => {
+  if(this.state.sustainFreq){
+    this.controlbar.current.releaseAll(false);
   }
-  this.setState({sustain: !this.state.sustain});
+  this.setState({sustainFreq: !this.state.sustainFreq});
 }
 
 handleTimbreToggle = () =>{
@@ -76,7 +76,7 @@ handleTimbreToggle = () =>{
             handleResize={this.handleResize}
             context={audioContext}
             onAudioEvent={this.onAudioEvent}
-            sustain={this.state.sustain}
+            sustainFreq={this.state.sustainFreq}
             timbreType={this.state.timbreType}
             ref={this.controlbar}/>
             <Oscilloscope
@@ -94,9 +94,23 @@ handleTimbreToggle = () =>{
             <Button
             className="sustain-button"
             toggle
-            active={this.state.sustain}
-            onClick={this.handleSustainToggle}>
-            Hold
+            active={this.state.sustainFreq}
+            onClick={this.handlesustainFreqToggle}>
+            Sustain
+            </Button>
+            <Button
+            className="lock-freq-button"
+            toggle
+            active={this.state.sustainFreq}
+            onClick={this.handlesustainFreqToggle}>
+            Lock Frequency
+            </Button>
+            <Button
+            className="lock-amp-button"
+            toggle
+            active={this.state.sustainFreq}
+            onClick={this.handlesustainFreqToggle}>
+            Lock Amplitude
             </Button>
 
           </React.Fragment>:

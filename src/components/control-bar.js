@@ -357,6 +357,7 @@ export default class ControlBar extends Component {
 
   onTouchMove(e){
     e.preventDefault(); // Always need to prevent default browser choices
+    e.stopPropagation();
     // Check if more fingers were moved than allowed
     if(e.changedTouches.length > NUM_VOICES ){
       return;
@@ -461,6 +462,7 @@ export default class ControlBar extends Component {
 
   onTouchEnd(e) {
     e.preventDefault(); // Always need to prevent default browser choices
+    e.stopPropagation();
     if(!this.props.sustainFreq){
       let {width, height} = this.props;
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.

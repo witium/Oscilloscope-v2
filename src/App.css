@@ -3,10 +3,13 @@
   /*height: 100%;*/
   width: 100%;
   overflow: hidden;
+  touch-action: none;
+  
 }
 body {
   position: fixed;
-  
+  touch-action: none;
+
 }
 
 .flex-container {

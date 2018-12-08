@@ -127,7 +127,7 @@ export default class ControlBar extends Component {
   componentWillUnmount() {
     this.masterVolume.mute = true;
     window.removeEventListener("resize", this.handleResize);
-    //window.removeEventListener("orientationchange", this.handleResize);
+    //  window.removeEventListener("orientationchange", this.handleResize);
 
   }
 
@@ -380,7 +380,11 @@ export default class ControlBar extends Component {
       // For each changed touch, do the same as onMouseMove
       if(this.props.timbreType == "Pure"){
         for (let i = 0; i < e.changedTouches.length; i++) {
-          let pos = getMousePos(this.canvas, e.changedTouches[i]);
+          //let pos = getMousePos(this.canvas, e.changedTouches[i]);
+          let pos =  {
+              x: (e.clientX),
+              y: (e.clientY)
+            }
           //console.log("POS", pos);
           let yPercent = 1 - pos.y / this.props.height;
           let xPercent = 1 - pos.x / this.props.width;

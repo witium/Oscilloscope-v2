@@ -27,8 +27,8 @@ function getMousePos(canvas, evt) {
     scaleY = canvas.height / rect.height; // relationship bitmap vs. element for Y
 
   return {
-    x: (evt.pageX - rect.left) * scaleX, // scale mouse coordinates after they have
-    y: (evt.pageY - rect.top) * scaleY // been adjusted to be relative to element
+    x: (evt.clientX - rect.left) * scaleX, // scale mouse coordinates after they have
+    y: (evt.clientY - rect.top) * scaleY // been adjusted to be relative to element
   }
 }
 

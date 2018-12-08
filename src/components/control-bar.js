@@ -360,8 +360,8 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     console.log("MOVE");
-    console.log(e.changedTouches)
-    console.log(e.originalEvent);
+    // console.log(e.changedTouches)
+    // console.log(e.originalEvent);
     // Check if more fingers were moved than allowed
     if(e.changedTouches.length > NUM_VOICES ){
       return;
@@ -369,7 +369,6 @@ export default class ControlBar extends Component {
     let resolutionMax = 20000;
     let resolutionMin = 20;
     let{height, width} = this.props;
-    console.log("state.touch:", this.state.touch);
 
     // If touch is pressed (Similar to mouseDown = true, although there should never be a case where this is false)
     if (this.state.touch) {
@@ -401,6 +400,7 @@ export default class ControlBar extends Component {
           // Ramp to new Volume
           this.synths[index].volume.exponentialRampToValueAtTime(gain,
             this.props.context.currentTime+RAMPVALUE);
+            console.log(index, this.synths[index].frequency.value, this.synths[index].volume.value,  yPercent, xPercent);
         }
         //Redraw Labels
         this.ctx.clearRect(0, 0, width, height);

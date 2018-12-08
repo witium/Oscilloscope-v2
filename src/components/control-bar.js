@@ -388,6 +388,8 @@ export default class ControlBar extends Component {
           let freq = this.getFreq(yPercent)[0];
             // Deals with rounding issues with the note lines
           let oldFreq = this.synths[index].frequency.value;
+          console.log(index, this.synths[index].frequency.value, this.synths[index].volume.value,  yPercent, xPercent);
+          
           for (let note in this.frequencies){
             if (Math.abs(this.frequencies[note] - oldFreq) < 0.1*oldFreq){
               oldFreq = this.frequencies[note]
@@ -400,7 +402,6 @@ export default class ControlBar extends Component {
           // Ramp to new Volume
           this.synths[index].volume.exponentialRampToValueAtTime(gain,
             this.props.context.currentTime+RAMPVALUE);
-            console.log(index, this.synths[index].frequency.value, this.synths[index].volume.value,  yPercent, xPercent);
         }
         //Redraw Labels
         this.ctx.clearRect(0, 0, width, height);

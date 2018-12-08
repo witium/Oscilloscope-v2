@@ -369,6 +369,7 @@ export default class ControlBar extends Component {
     let resolutionMax = 20000;
     let resolutionMin = 20;
     let{height, width} = this.props;
+    console.log("state.touch:", this.state.touch);
 
     // If touch is pressed (Similar to mouseDown = true, although there should never be a case where this is false)
     if (this.state.touch) {

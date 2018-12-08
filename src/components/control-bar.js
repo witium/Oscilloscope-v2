@@ -121,12 +121,15 @@ export default class ControlBar extends Component {
     this.frequencies = {};
 
     window.addEventListener("resize", this.handleResize);
+    window.addEventListener("orientationchange", this.handleResize)
   }
 
 
   componentWillUnmount() {
     this.masterVolume.mute = true;
     window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("orientationchange", this.handleResize)
+
   }
 
 
@@ -360,6 +363,7 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     console.log("MOVE");
+    conosle.log(e.targetTouches);
     // console.log(e.changedTouches)
     // console.log(e.originalEvent);
     // Check if more fingers were moved than allowed

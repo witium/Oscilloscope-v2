@@ -85,7 +85,7 @@ handleTimbreToggle = () =>{
             handleResize={this.handleResize}
             renderSignals={this.state.renderSignals}
             ref={this.oscilloscope}/>
-            {/*<Button
+            <Button
             className="timbre-button"
             color={color}
             onClick={this.handleTimbreToggle}>
@@ -111,7 +111,7 @@ handleTimbreToggle = () =>{
             active={this.state.sustainFreq}
             onClick={this.handlesustainFreqToggle}>
             Lock Amplitude
-            </Button>*/}
+            </Button>
 
           </React.Fragment>:
           <p className="flashing">Click or tap anywhere on the canvas to start the signal generator</p>

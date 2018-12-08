@@ -25,7 +25,15 @@ class App extends Component {
     }
   }
 
-handleResize= () => this.setState({width: window.innerWidth, height: window.innerHeight});
+componentDidMount(){
+  window.addEventListener("orientationchange", this.handleResize);
+
+}
+
+handleResize= () => {
+  console.log("RESIZE")
+  this.setState({width: window.innerWidth, height: window.innerHeight});
+}
 
 startOscilloscope = () => {
   if (!this.state.started){

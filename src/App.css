@@ -4,7 +4,7 @@
   width: 100%;
   overflow: hidden;
   touch-action: none;
-  
+
 }
 body {
   position: fixed;
@@ -32,32 +32,37 @@ canvas {
   z-index: 10;
   position: absolute;
   bottom: 0.5%;
-  right: 1%;
+  right: 0%;
   width: 7em;
-
+  min-height: 40px;
 }
 .lock-freq-button {
   z-index: 10;
   position: absolute;
-  bottom: 7%;
-  right: 1%;
+  bottom: 0.5%;
+  right: 8%;
   width: 7em;
+  font-size: 0.85em!important;
+  height: 3em;
 
 }
+
 .lock-amp-button {
   z-index: 10;
   position: absolute;
-  bottom: 16%;
-  right: 1%;
+  bottom: 3.4em;
+  right: 8%;
   width: 7em;
+  font-size: 0.85em!important;
+  height: 3em;
 
 }
 
 .timbre-button {
   z-index: 10;
   position: absolute;
-  bottom: 0.5%;;
-  right: 9%;
+  bottom: 0.5%;
+  right: 14.82%;
   width: 7em;
 }
 

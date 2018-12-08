@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 
 
 import MainMenu from './components/menu';
@@ -19,9 +19,11 @@ class App extends Component {
       width: window.innerWidth,
       height: window.innerHeight,
       started: false,
-      sustainFreq: false,
       timbre: false,
-      timbreType: 'Pure'
+      timbreType: 'Pure',
+      sustain: false,
+      lockFreq: false,
+      lockAmp: false
     }
   }
 
@@ -42,12 +44,7 @@ onAudioEvent = (signals) =>{
   this.oscilloscope.current.renderCanvas(signals)
 }
 
-handlesustainFreqToggle = () => {
-  if(this.state.sustainFreq){
-    this.controlbar.current.releaseAll(false);
-  }
-  this.setState({sustainFreq: !this.state.sustainFreq});
-}
+
 
 handleTimbreToggle = () =>{
   if(this.state.timbre){
@@ -58,14 +55,41 @@ handleTimbreToggle = () =>{
   }
 }
 
+handlesustainToggle = () => {
+  if(this.state.sustain){
+    this.controlbar.current.releaseAll(false);
+  }
+  this.setState({sustain: !this.state.sustain});
+}
+
+handlelockFreqToggle = () => {
+  //this.controlbar.current.lockFrequencies();
+  this.setState({lockFreq: !this.state.lockFreq});
+
+}
+handlelockAmpToggle = () => {
+  // this.controlbar.current.lockGains();
+  this.setState({lockAmp: !this.state.lockAmp});
+}
+
 
   render() {
       // let backgroundColor = "yellow";
-      let color;
+      let color, freqIcon, ampIcon;
       if(this.state.timbre){
         color = "red";
       } else {
         color = "teal";
+      }
+      if(this.state.lockFreq){
+        freqIcon = "lock"
+      } else {
+        freqIcon = "unlock"
+      }
+      if(this.state.lockAmp){
+        ampIcon = "lock"
+      } else {
+        ampIcon = "unlock"
       }
 
     return (
@@ -79,8 +103,10 @@ handleTimbreToggle = () =>{
             handleResize={this.handleResize}
             context={audioContext}
             onAudioEvent={this.onAudioEvent}
-            sustainFreq={this.state.sustainFreq}
+            sustain={this.state.sustain}
             timbreType={this.state.timbreType}
+            lockFreq={this.state.lockFreq}
+            lockAmp={this.state.lockAmp}
             ref={this.controlbar}/>
             <Oscilloscope
             width={3*this.state.width/4}
@@ -97,23 +123,27 @@ handleTimbreToggle = () =>{
             <Button
             className="sustain-button"
             toggle
-            active={this.state.sustainFreq}
-            onClick={this.handlesustainFreqToggle}>
+            active={this.state.sustain}
+            onClick={this.handlesustainToggle}>
             Sustain
             </Button>
             <Button
+            icon
             className="lock-freq-button"
             toggle
-            active={this.state.sustainFreq}
-            onClick={this.handlesustainFreqToggle}>
-            Lock Frequency
+            active={this.state.lockFreq}
+            onClick={this.handlelockFreqToggle}>
+            <Icon name={freqIcon}/>
+            Frequency
             </Button>
             <Button
+            icon
             className="lock-amp-button"
             toggle
-            active={this.state.sustainFreq}
-            onClick={this.handlesustainFreqToggle}>
-            Lock Amplitude
+            active={this.state.lockAmp}
+            onClick={this.handlelockAmpToggle}>
+            <Icon name={ampIcon}/>
+            Amplitude
             </Button>
 
           </React.Fragment>:

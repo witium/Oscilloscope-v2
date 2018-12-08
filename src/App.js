@@ -114,38 +114,40 @@ handlelockAmpToggle = () => {
             handleResize={this.handleResize}
             renderSignals={this.state.renderSignals}
             ref={this.oscilloscope}/>
-            <Button
-            className="timbre-button"
-            color={color}
-            onClick={this.handleTimbreToggle}>
-            {this.state.timbreType}
-            </Button>
-            <Button
-            className="sustain-button"
-            toggle
-            active={this.state.sustain}
-            onClick={this.handlesustainToggle}>
-            Sustain
-            </Button>
-            <Button
-            icon
-            className="lock-freq-button"
-            toggle
-            active={this.state.lockFreq}
-            onClick={this.handlelockFreqToggle}>
-            <Icon name={freqIcon}/>
-            Frequency
-            </Button>
-            <Button
-            icon
-            className="lock-amp-button"
-            toggle
-            active={this.state.lockAmp}
-            onClick={this.handlelockAmpToggle}>
-            <Icon name={ampIcon}/>
-            Amplitude
-            </Button>
+            <Button.Group className="button-group-container">
+              <Button
+              className="timbre-button"
+              color={color}
+              onClick={this.handleTimbreToggle}>
+              {this.state.timbreType}
+              </Button>
 
+              <Button
+              icon
+              className="lock-freq-button"
+              toggle
+              active={this.state.lockFreq}
+              onClick={this.handlelockFreqToggle}>
+              <Icon name={freqIcon}/>
+              Frequency
+              </Button>
+              <Button
+              icon
+              className="lock-amp-button"
+              toggle
+              active={this.state.lockAmp}
+              onClick={this.handlelockAmpToggle}>
+              <Icon name={ampIcon}/>
+              Amplitude
+              </Button>
+              <Button
+              className="sustain-button"
+              toggle
+              active={this.state.sustain}
+              onClick={this.handlesustainToggle}>
+              Sustain
+              </Button>
+            </Button.Group>
           </React.Fragment>:
           <p className="flashing">Click or tap anywhere on the canvas to start the signal generator</p>
         }

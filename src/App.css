@@ -27,42 +27,52 @@ canvas {
   touch-action: none;
   overflow: hidden;
 }
-
-.sustain-button {
+.button-group-container {
   z-index: 10;
   position: absolute;
   bottom: 0.5%;
-  right: 0%;
+  left: 69%;
+  /* right: 25%; */
   width: 7em;
   min-height: 40px;
 }
-.lock-freq-button {
+
+
+.sustain-button {
   z-index: 10;
+  /* position: absolute; */
+  /* bottom: 0.5%; */
+  /* right: 0%; */
+  /* width: 7em; */
+  /* min-height: 40px; */
+}
+.lock-freq-button {
+  /* z-index: 10;
   position: absolute;
   bottom: 0.5%;
   right: 8%;
   width: 7em;
   font-size: 0.85em!important;
-  height: 3em;
+  height: 3em; */
 
 }
 
 .lock-amp-button {
-  z-index: 10;
+  /* z-index: 10;
   position: absolute;
   bottom: 3.4em;
-  right: 8%;
+  right: 3em;
   width: 7em;
   font-size: 0.85em!important;
-  height: 3em;
+  height: 3em; */
 
 }
 
 .timbre-button {
-  z-index: 10;
-  position: absolute;
-  bottom: 0.5%;
-  right: 14.82%;
+  /* z-index: 10; */
+  /* position: absolute; */
+  /* bottom: 0.5%; */
+  /* right: 13em;/ */
   width: 7em;
 }
 

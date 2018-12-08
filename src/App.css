@@ -31,10 +31,12 @@ canvas {
   z-index: 10;
   position: absolute;
   bottom: 0.5%;
-  left: 69%;
+  right: 0%;
+  /* transform: translateX(-50%); */
+
   /* right: 25%; */
-  width: 7em;
-  min-height: 40px;
+  /* width: 7em; */
+  /* min-height: 40px; */
 }
 
 

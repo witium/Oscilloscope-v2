@@ -381,14 +381,15 @@ export default class ControlBar extends Component {
           //console.log("POS", pos);
           let yPercent = 1 - pos.y / this.props.height;
           let xPercent = 1 - pos.x / this.props.width;
-          console.log(yPercent, xPercent);
+          // console.log(yPercent, xPercent);
           // Determines index of the synth needing to change volume/frequency
-          let index = e.changedTouches[i].identifier;
+          let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;
-          console.log(index);
+          console.log(e.changedTouches);
+          console.log(e.changedTouches[i])
           let gain = getGain(xPercent);
           let freq = this.getFreq(yPercent)[0];
-          console.log(gain, freq);
+          // console.log(gain, freq);
             // Deals with rounding issues with the note lines
           let oldFreq = this.synths[index].frequency.value;
           //console.log(index, this.synths[index].frequency.value, this.synths[index].volume.value,  yPercent, xPercent);

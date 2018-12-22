@@ -316,6 +316,7 @@ export default class ControlBar extends Component {
         if(this.props.lockAmp){
           this.prevGain[newVoice] = gain;
         }
+        if(newVoice < 0) newVoice = NUM_VOICES + newVoice;
         console.log("3", newVoice, NUM_VOICES, e.changedTouches[i])
 
         this.setState({touch: true});
@@ -408,6 +409,8 @@ export default class ControlBar extends Component {
           // Determines index of the synth needing to change volume/frequency
           let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;
+          if(index < 0) index = NUM_VOICES + index;
+
           let gain = getGain(xPercent);
           let freq = this.getFreq(yPercent)[0];
           // console.log(gain, freq);
@@ -457,6 +460,8 @@ export default class ControlBar extends Component {
         let xPercent = 1 - pos.x / this.props.width;
         // Determines index of the synth needing to change volume/frequency
         let index = e.changedTouches[0].identifier;
+        if(index < 0) index = NUM_VOICES + index;
+
         // : index;
 
         let gain = getGain(xPercent);
@@ -485,6 +490,8 @@ export default class ControlBar extends Component {
           this.label(freq, pos.x, pos.y,0 );
           for(let i = 0; i<NUM_VOICES - 1; i++){
             let index = (i+1)%NUM_VOICES;
+            if(index < 0) index = NUM_VOICES + index;
+
             let complexFrequency = freq*this.complexHarmonics[i];
             if(complexFrequency < 20000){
               //console.log(complexFrequency, this.complexVols[i]+deltaVolume)
@@ -525,6 +532,8 @@ export default class ControlBar extends Component {
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
+            if(index < 0) index = NUM_VOICES + index;
+            
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
             if(this.props.lockFreq){

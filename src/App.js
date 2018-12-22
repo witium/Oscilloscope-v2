@@ -72,6 +72,11 @@ handlelockAmpToggle = () => {
   this.setState({lockAmp: !this.state.lockAmp});
 }
 
+restart = () =>{
+  this.setState({started: false});
+  this.handleResize();
+}
+
 
   render() {
       // let backgroundColor = "yellow";
@@ -113,6 +118,7 @@ handlelockAmpToggle = () => {
             height={this.state.height}
             handleResize={this.handleResize}
             renderSignals={this.state.renderSignals}
+            restart={this.restart}
             ref={this.oscilloscope}/>
             <Button.Group className="button-group-container">
               <Button

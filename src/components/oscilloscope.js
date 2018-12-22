@@ -20,14 +20,14 @@ export default class Oscilloscope extends Component {
   componentDidMount() {
     this.ctx = this.canvas.getContext('2d');
     window.addEventListener("resize", this.handleResize);
-    window.addEventListener("orientationchange", this.handleResize);
+    window.addEventListener("orientationchange", this.props.restart);
 
     this.drawPureWavesCanvas();
 
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleResize);
-    window.removeEventListener("orientationchange", this.handleResize);
+    window.removeEventListener("orientationchange", this.props.restart);
 
   }
 

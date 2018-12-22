@@ -327,7 +327,7 @@ export default class ControlBar extends Component {
         let yPercent = 1 - pos.y / this.props.height;
         let freq = this.getFreq(yPercent)[0];
         let gain = getGain(xPercent);
-        let index = e.changedTouches[i].identifier % NUM_VOICES;
+        let index = e.touches[i].identifier % NUM_VOICES;
         if(index < 0) index = NUM_VOICES + index;
         this.label(freq, pos.x, pos.y, index );
         audioEvent.push({freq: freq, volume: gain, color: index})
@@ -452,7 +452,7 @@ export default class ControlBar extends Component {
           if(this.props.lockAmp){
             gain = this.prevGain[e.touches[i].identifier];
           }
-          let index = e.changedTouches[i].identifier % NUM_VOICES;
+          let index = e.touches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})

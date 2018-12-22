@@ -546,7 +546,7 @@ export default class ControlBar extends Component {
             if(index < 0) index = NUM_VOICES + index;
             console.log("INDEX: ", index);
             for(let j=0; j<NUM_VOICES; j++){
-              console.log(this.synths[j].oscillator._oscillator);
+              console.log(j, this.synths[j].oscillator.state);
             }
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];

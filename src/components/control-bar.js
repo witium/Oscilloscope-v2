@@ -316,7 +316,7 @@ export default class ControlBar extends Component {
         if(this.props.lockAmp){
           this.prevGain[newVoice] = gain;
         }
-        console.log("3")
+        console.log("3", newVoice)
 
         this.setState({touch: true});
         this.synths[newVoice].volume.value = gain;

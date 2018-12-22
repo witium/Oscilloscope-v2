@@ -531,7 +531,7 @@ export default class ControlBar extends Component {
   onTouchEnd(e) {
     console.log("END");
     e.preventDefault(); // Always need to prevent default browser choices
-    e.stopPropagation();
+    //e.stopPropagation();
     if(!this.props.sustain){
       let {width, height} = this.props;
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
@@ -544,7 +544,7 @@ export default class ControlBar extends Component {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
-
+            console.log("INDEX: ", index);
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
             // CHECK THIS

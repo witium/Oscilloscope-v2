@@ -401,9 +401,12 @@ export default class ControlBar extends Component {
       if(this.props.timbreType == "Pure"){
         for (let i = 0; i < e.changedTouches.length; i++) {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
+          if(pos.x > this.props.width){
+            pos.x = this.props.width;
+          }
           let yPercent = 1 - pos.y / this.props.height;
           let xPercent = 1 - pos.x / this.props.width;
-          console.log(pos.x, this.props.width, xPercent );
+
           // Determines index of the synth needing to change volume/frequency
           let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;

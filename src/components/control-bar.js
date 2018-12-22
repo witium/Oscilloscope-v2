@@ -289,11 +289,9 @@ export default class ControlBar extends Component {
     console.log("START")
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
-    console.log("1")
     if(e.touches.length > NUM_VOICES ){
       return;
     }
-    console.log("2")
     let audioEvent = [];
     let resolutionMax = 20000;
     let resolutionMin = 20;
@@ -303,12 +301,14 @@ export default class ControlBar extends Component {
     if(this.props.timbreType === "Pure"){
       for (let i = 0; i < e.changedTouches.length; i++) {
         let pos = getMousePos(this.canvas, e.changedTouches[i]);
-        console.log("3")
+        console.log("1")
 
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
         let gain = getGain(xPercent);
         let freq = this.getFreq(yPercent)[0];
+        console.log("2")
+        console.log(i, e.changedTouches[i].identifier)
         let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
         if(this.props.lockFreq){
           this.prevFreq[newVoice] = freq;
@@ -316,14 +316,14 @@ export default class ControlBar extends Component {
         if(this.props.lockAmp){
           this.prevGain[newVoice] = gain;
         }
+        console.log("3")
+
         this.setState({touch: true});
         this.synths[newVoice].volume.value = gain;
         this.synths[newVoice].triggerAttack(freq);
-        console.log("4")
 
 
       }
-      console.log("5")
       for (let i = 0; i < e.touches.length; i++) {
         let pos = getMousePos(this.canvas, e.touches[i]);
         let xPercent = 1 - pos.x / this.props.width;
@@ -375,7 +375,6 @@ export default class ControlBar extends Component {
         return;
       }
     }
-    console.log("6")
     this.props.onAudioEvent(audioEvent);
 
   }

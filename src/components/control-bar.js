@@ -390,7 +390,6 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     // e.stopPropagation();
     console.log("MOVE");
-    try {
 
     // console.log(e.changedTouches)
     // console.log(e.originalEvent);
@@ -526,9 +525,7 @@ export default class ControlBar extends Component {
 
       this.props.onAudioEvent(audioEvent);
     }
-  } catch(err){
-    console.log("ERROR", err);
-  }
+
 
   }
 
@@ -547,9 +544,11 @@ export default class ControlBar extends Component {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
+            console.log(index, changedTouches[i].identifier)
 
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
+            // CHECK THIS
             if(this.props.lockFreq){
               freq = this.prevFreq[e.touches[i].identifier];
             }

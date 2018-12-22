@@ -439,6 +439,9 @@ export default class ControlBar extends Component {
 
         for (let i = 0; i < e.touches.length; i++) {
           let pos = getMousePos(this.canvas, e.touches[i]);
+          if(pos.x > this.props.width){
+            pos.x = this.props.width;
+          }
           let xPercent = 1 - pos.x / this.props.width;
           let yPercent = 1 - pos.y / this.props.height;
           let freq = this.getFreq(yPercent)[0];
@@ -456,6 +459,9 @@ export default class ControlBar extends Component {
         }
       } else {
         let pos = getMousePos(this.canvas, e.changedTouches[0]);
+        if(pos.x > this.props.width){
+          pos.x = this.props.width;
+        }
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
         // Determines index of the synth needing to change volume/frequency
@@ -500,6 +506,9 @@ export default class ControlBar extends Component {
                   this.props.context.currentTime+RAMPVALUE);
               let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
               let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
+              if(xPos > this.props.width){
+                xPos = this.props.width;
+              }
               // CHECK THE INDEX
               if(this.props.lockFreq){
                 freq = this.prevFreq[e.touches[i].identifier];

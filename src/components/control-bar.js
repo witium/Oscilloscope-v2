@@ -22,6 +22,8 @@ export default class ControlBar extends Component {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchCancel = this.onTouchCancel.bind(this);
+
     this.state = {
       mouseDown: false,
       touch: false,
@@ -162,7 +164,6 @@ export default class ControlBar extends Component {
         let index = (i+1)%NUM_VOICES;
         let complexFrequency = freqs[0]*this.complexHarmonics[i];
         if(complexFrequency < 20000){
-          // console.log(complexFrequency, this.complexVols[i])
           this.synths[index].triggerAttack(complexFrequency);
           this.synths[index].volume.value = this.complexVols[i]*xPercent;
         }
@@ -209,7 +210,6 @@ export default class ControlBar extends Component {
             let index = (i+1)%NUM_VOICES;
             let complexFrequency = freqs[0]*this.complexHarmonics[i];
             if(complexFrequency < 20000){
-              //console.log(complexFrequency, this.complexVols[i]+deltaVolume)
               this.synths[index].frequency.exponentialRampToValueAtTime(complexFrequency,
                 this.props.context.currentTime+RAMPVALUE);
               this.synths[index].volume.exponentialRampToValueAtTime(this.complexVols[i]*xPercent,
@@ -301,14 +301,11 @@ export default class ControlBar extends Component {
     if(this.props.timbreType === "Pure"){
       for (let i = 0; i < e.changedTouches.length; i++) {
         let pos = getMousePos(this.canvas, e.changedTouches[i]);
-        // console.log("1")
 
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
         let gain = getGain(xPercent);
         let freq = this.getFreq(yPercent)[0];
-        // console.log("2")
-        // console.log(i, e.changedTouches[i].identifier)
         let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
         if(newVoice < 0) newVoice = NUM_VOICES + newVoice;
         if(this.props.lockFreq){
@@ -317,7 +314,6 @@ export default class ControlBar extends Component {
         if(this.props.lockAmp){
           this.prevGain[newVoice] = gain;
         }
-        // console.log("3", newVoice, NUM_VOICES, e.changedTouches[i])
 
         this.setState({touch: true});
         this.synths[newVoice].volume.value = gain;
@@ -368,7 +364,6 @@ export default class ControlBar extends Component {
           if(index < 0) index = NUM_VOICES + index;
           let complexFrequency = freq*this.complexHarmonics[i];
           if(complexFrequency < 20000){
-            // console.log(complexFrequency, this.complexVols[i])
             this.synths[index].triggerAttack(complexFrequency);
             this.synths[index].volume.value = this.complexVols[i]*xPercent;
             let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
@@ -391,8 +386,6 @@ export default class ControlBar extends Component {
     // e.stopPropagation();
     console.log("MOVE");
 
-    // console.log(e.changedTouches)
-    // console.log(e.originalEvent);
     // Check if more fingers were moved than allowed
     if(e.changedTouches.length > NUM_VOICES ){
       return;
@@ -409,10 +402,8 @@ export default class ControlBar extends Component {
       if(this.props.timbreType == "Pure"){
         for (let i = 0; i < e.changedTouches.length; i++) {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
-          //console.log("POS", pos);
           let yPercent = 1 - pos.y / this.props.height;
           let xPercent = 1 - pos.x / this.props.width;
-          // console.log(yPercent, xPercent);
           // Determines index of the synth needing to change volume/frequency
           let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;
@@ -420,10 +411,8 @@ export default class ControlBar extends Component {
 
           let gain = getGain(xPercent);
           let freq = this.getFreq(yPercent)[0];
-          // console.log(gain, freq);
             // Deals with rounding issues with the note lines
           let oldFreq = this.synths[index].frequency.value;
-          //console.log(index, this.synths[index].frequency.value, this.synths[index].volume.value,  yPercent, xPercent);
           for (let note in this.frequencies){
             if (Math.abs(this.frequencies[note] - oldFreq) < 0.1*oldFreq){
               oldFreq = this.frequencies[note]
@@ -459,7 +448,6 @@ export default class ControlBar extends Component {
           }
           let index = e.changedTouches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
-          //console.log(i, freq, gain, this.prevFreq)
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})
         }
@@ -503,7 +491,6 @@ export default class ControlBar extends Component {
 
             let complexFrequency = freq*this.complexHarmonics[i];
             if(complexFrequency < 20000){
-              //console.log(complexFrequency, this.complexVols[i]+deltaVolume)
               this.synths[index].frequency.exponentialRampToValueAtTime(complexFrequency,
                 this.props.context.currentTime+RAMPVALUE);
               this.synths[index].volume.exponentialRampToValueAtTime(this.complexVols[i]*xPercent,
@@ -545,7 +532,6 @@ export default class ControlBar extends Component {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
-            console.log(index, e.changedTouches[i].identifier)
 
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
@@ -567,6 +553,10 @@ export default class ControlBar extends Component {
         // Fix This
       this.props.onAudioEvent([{}]);
     }
+  }
+
+  onTouchCancel(e){
+    console.log("CANCEL");
   }
 
   // Helper function that determines the frequency to play based on the mouse/finger position
@@ -803,7 +793,6 @@ generateComplexWeights(){
 }
 
 // lockFrequencies(){
-//   console.log("Hi")
 //   for(let i=0; i<NUM_VOICES; i++){
 //     this.prevFreq = this.synths[i].frequency.value;
 //   }
@@ -831,6 +820,7 @@ generateComplexWeights(){
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        onTouchCancel={this.onTouchCancel}
         ref={(c) => {
           this.canvas = c;}} className="control-canvas"/>
     );

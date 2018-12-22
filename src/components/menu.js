@@ -14,7 +14,7 @@ class MainMenu extends Component {
     return (
       <div className="menu-container">
         <Menu>
-          <Menu.Header className="menu-title" active="false">Signals Generator</Menu.Header>
+          <Menu.Header className="menu-title" active="false">Signal Generator</Menu.Header>
           <Menu.Item className="function-switch-button-container">
             <button className="function-switch-button" onClick={this.switchToSpectrogram}>Spectrogram</button>
           </Menu.Item>

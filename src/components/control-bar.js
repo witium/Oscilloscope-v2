@@ -388,7 +388,7 @@ export default class ControlBar extends Component {
 
   onTouchMove(e){
     e.preventDefault(); // Always need to prevent default browser choices
-    e.stopPropagation();
+    // e.stopPropagation();
     console.log("MOVE");
     try {
 

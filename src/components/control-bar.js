@@ -325,19 +325,19 @@ export default class ControlBar extends Component {
 
 
       }
+      this.ctx.clearRect(0, 0, this.props.width, this.props.height);
       for (let i = 0; i < e.touches.length; i++) {
         let pos = getMousePos(this.canvas, e.touches[i]);
         let xPercent = 1 - pos.x / this.props.width;
         let yPercent = 1 - pos.y / this.props.height;
         let freq = this.getFreq(yPercent)[0];
         let gain = getGain(xPercent);
-        this.ctx.clearRect(0, 0, this.props.width, this.props.height);
-        this.renderCanvas();
         let index = e.changedTouches[i].identifier % NUM_VOICES;
         if(index < 0) index = NUM_VOICES + index;
         this.label(freq, pos.x, pos.y, index );
         audioEvent.push({freq: freq, volume: gain, color: index})
       }
+      this.renderCanvas();
     } else {
       // COMPLEX
       if(!this.state.touch){
@@ -540,11 +540,12 @@ export default class ControlBar extends Component {
           this.synths[0].triggerRelease();
           this.releaseAll(true);
         } else {
+          this.ctx.clearRect(0, 0, width, height);
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
-            console.log(index, changedTouches[i].identifier)
+            console.log(index, e.changedTouches[i].identifier)
 
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
@@ -555,12 +556,14 @@ export default class ControlBar extends Component {
               this.goldIndices.splice(index, 1);
               this.synths[index].triggerRelease();
 
-              this.ctx.clearRect(0, 0, width, height);
               this.label(freq, pos.x, pos.y, index );
               this.renderCanvas();
             }
         }
-        this.setState({touch: false});
+
+        if(e.touches.length == 0){
+          this.setState({touch: false});
+        }
         // Fix This
       this.props.onAudioEvent([{}]);
     }

@@ -22,7 +22,6 @@ export default class ControlBar extends Component {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchCancel = this.onTouchCancel.bind(this);
 
     this.state = {
       mouseDown: false,
@@ -354,8 +353,8 @@ export default class ControlBar extends Component {
         this.setState({touch: true});
         this.synths[0].volume.value = gain;
         this.synths[0].triggerAttack(freq);
-        this.ctx.clearRect(0, 0, this.props.width, this.props.height);
-        this.renderCanvas();
+        //this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+        //this.renderCanvas();
         this.label(freq, pos.x, pos.y, newVoice );
         audioEvent.push({freq: freq, volume: gain, color: newVoice})
 
@@ -404,6 +403,7 @@ export default class ControlBar extends Component {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
           let yPercent = 1 - pos.y / this.props.height;
           let xPercent = 1 - pos.x / this.props.width;
+          console.log(pos.x, this.props.width, xPercent );
           // Determines index of the synth needing to change volume/frequency
           let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;
@@ -555,9 +555,6 @@ export default class ControlBar extends Component {
     }
   }
 
-  onTouchCancel(e){
-    console.log("CANCEL");
-  }
 
   // Helper function that determines the frequency to play based on the mouse/finger position
   // Also deals with snapping it to a scale if scale mode is on
@@ -820,7 +817,6 @@ generateComplexWeights(){
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
-        onTouchCancel={this.onTouchCancel}
         ref={(c) => {
           this.canvas = c;}} className="control-canvas"/>
     );

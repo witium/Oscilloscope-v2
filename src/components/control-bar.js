@@ -594,6 +594,7 @@ export default class ControlBar extends Component {
         for(let j=0; j<NUM_VOICES; j++){
           console.log(j, this.synths[j].oscillator.state);
         }
+      }
   }
 
 

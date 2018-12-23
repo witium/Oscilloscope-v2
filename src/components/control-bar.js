@@ -557,7 +557,7 @@ export default class ControlBar extends Component {
               this.goldIndices.splice(index, 1);
               this.synths[index].triggerRelease();
               console.log("RELEASE")
-              this.synths[index].volume.exponentialRampToValueAtTime(-100, this.props.context.currentTime+2);
+              this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);
 
               this.label(freq, pos.x, pos.y, index );
               this.renderCanvas();

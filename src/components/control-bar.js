@@ -590,7 +590,7 @@ export default class ControlBar extends Component {
           audioEvent.push({});
         }
         this.props.onAudioEvent(audioEvent);
-        console.log("INDEX: ", index);
+        // console.log("INDEX: ", index);
         for(let j=0; j<NUM_VOICES; j++){
           console.log(j, this.synths[j].oscillator.state);
         }

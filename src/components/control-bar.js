@@ -555,7 +555,6 @@ export default class ControlBar extends Component {
               freq = this.prevFreq[e.touches[i].identifier];
             }
               this.goldIndices.splice(index, 1);
-              this.synths[index].volume.cancelScheduledValues(0);
               this.synths[index].triggerRelease();
               console.log("RELEASE")
               this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);

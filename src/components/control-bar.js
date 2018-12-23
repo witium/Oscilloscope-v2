@@ -562,12 +562,9 @@ export default class ControlBar extends Component {
             }
         }
 
-        if(e.touches.length == 0){
-          this.setState({touch: false});
-          this.props.onAudioEvent([{}]);
 
-        } else {
-          let audioEvent = []
+
+        let audioEvent = []
         for (let i = 0; i < e.touches.length; i++) {
           let pos = getMousePos(this.canvas, e.touches[i]);
           if(pos.x > this.props.width){
@@ -588,9 +585,15 @@ export default class ControlBar extends Component {
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})
         }
-        this.props.onAudioEvent(audioEvent);        
-      }
-    }
+        if(e.touches.length == 0){
+          this.setState({touch: false});
+          audioEvent.push({});
+        }
+        this.props.onAudioEvent(audioEvent);
+        console.log("INDEX: ", index);
+        for(let j=0; j<NUM_VOICES; j++){
+          console.log(j, this.synths[j].oscillator.state);
+        }
   }
 
 

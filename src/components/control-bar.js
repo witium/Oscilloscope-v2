@@ -556,6 +556,8 @@ export default class ControlBar extends Component {
             }
               this.goldIndices.splice(index, 1);
               this.synths[index].triggerRelease();
+              console.log("RELEASE")
+              this.synths[index].volume.exponentialRampToValueAtTime(-100, this.props.context.currentTime+1);
 
               this.label(freq, pos.x, pos.y, index );
               this.renderCanvas();
@@ -583,17 +585,14 @@ export default class ControlBar extends Component {
           let index = e.touches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
           this.label(freq, pos.x, pos.y, index );
-          audioEvent.push({freq: freq, volume: gain, color: index})
+          audioEvent.push({freq: freq, volume: gain, color: index});
+
         }
         if(e.touches.length == 0){
           this.setState({touch: false});
           audioEvent.push({});
         }
         this.props.onAudioEvent(audioEvent);
-        // console.log("INDEX: ", index);
-        for(let j=0; j<NUM_VOICES; j++){
-          console.log(j, this.synths[j].oscillator.state);
-        }
       }
   }
 

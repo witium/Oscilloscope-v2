@@ -321,6 +321,7 @@ export default class ControlBar extends Component {
 
       }
       this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+      this.renderCanvas();
       for (let i = 0; i < e.touches.length; i++) {
         let pos = getMousePos(this.canvas, e.touches[i]);
         let xPercent = 1 - pos.x / this.props.width;
@@ -332,7 +333,6 @@ export default class ControlBar extends Component {
         this.label(freq, pos.x, pos.y, index );
         audioEvent.push({freq: freq, volume: gain, color: index})
       }
-      this.renderCanvas();
     } else {
       // COMPLEX
       if(!this.state.touch){
@@ -367,7 +367,7 @@ export default class ControlBar extends Component {
             this.synths[index].volume.value = this.complexVols[i]*xPercent;
             let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
             let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
-            audioEvent.push({freq: complexFrequency, volume: gain, index});
+            audioEvent.push({freq: complexFrequency, volume: gain, color: index});
             this.label(complexFrequency, xPos, yPos, index);
 
           }

@@ -567,6 +567,7 @@ export default class ControlBar extends Component {
           this.props.onAudioEvent([{}]);
 
         } else {
+          let audioEvent = []
         for (let i = 0; i < e.touches.length; i++) {
           let pos = getMousePos(this.canvas, e.touches[i]);
           if(pos.x > this.props.width){
@@ -587,6 +588,7 @@ export default class ControlBar extends Component {
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})
         }
+        this.props.onAudioEvent(audioEvent);        
       }
     }
   }

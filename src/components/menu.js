@@ -13,7 +13,7 @@ class MainMenu extends Component {
   render() {
     return (
       <div className="menu-container">
-        <Menu>
+        <Menu style={{border: "0", height: "100%"}}>
           <Menu.Header className="menu-title" active="false">Signal Generator</Menu.Header>
           <Menu.Item className="function-switch-button-container">
             <button className="function-switch-button" onClick={this.switchToSpectrogram}>Spectrogram</button>

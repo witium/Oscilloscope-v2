@@ -567,7 +567,9 @@ export default class ControlBar extends Component {
   onTouchEnd(e) {
     e.preventDefault(); // Always need to prevent default browser choices
     //e.stopPropagation();
+    console.log(this.props.sustain)
     if(!this.props.sustain){
+      console.log("HIs")
       let {width, height} = this.props;
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
         if(this.props.timbreType === "Complex"){

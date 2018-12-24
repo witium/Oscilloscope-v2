@@ -46,6 +46,11 @@ function getGain(index) {
   return -1 * (index * 30);
 }
 
+function getLinearGain(gain){
+  gain = -1 * gain / 30;
+  return gain + 0.1;
+}
+
 
 function calculateNewMax(y, A0, newYPercent){
   // A1 == A0
@@ -78,4 +83,4 @@ function logspace(start, stop, n, N) {
 }
 
 
-export {convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear}
+export {convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear, getLinearGain}

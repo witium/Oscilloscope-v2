@@ -3,7 +3,7 @@ import "../styles/control-bar.css"
 import Tone from 'tone';
 import generateScale from '../util/generateScale';
 
-import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, dbToLinear} from "../util/conversions";
+import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, dbToLinear, getLinearGain} from "../util/conversions";
 import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLORTOTAL} from "../util/colors";
 const ticks = 7;
 const yLabelOffset = 5;
@@ -285,7 +285,7 @@ export default class ControlBar extends Component {
   }
 
   onTouchStart(e){
-    console.log("START")
+    // console.log("START")
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     if(e.touches.length > NUM_VOICES ){
@@ -366,7 +366,8 @@ export default class ControlBar extends Component {
             this.synths[index].triggerAttack(complexFrequency);
             this.synths[index].volume.value = this.complexVols[i]*xPercent;
             let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
-            let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
+            let xPos = (1 - getLinearGain(this.complexVols[i]*xPercent)) * width;
+            // let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
             audioEvent.push({freq: complexFrequency, volume: gain, color: index});
             this.label(complexFrequency, xPos, yPos, index);
 
@@ -383,7 +384,7 @@ export default class ControlBar extends Component {
   onTouchMove(e){
     e.preventDefault(); // Always need to prevent default browser choices
     // e.stopPropagation();
-    console.log("MOVE");
+    // console.log("MOVE");
 
     // Check if more fingers were moved than allowed
     if(e.changedTouches.length > NUM_VOICES ){
@@ -446,14 +447,21 @@ export default class ControlBar extends Component {
           let yPercent = 1 - pos.y / this.props.height;
           let freq = this.getFreq(yPercent)[0];
           let gain = getGain(xPercent);
-          if(this.props.lockFreq){
-            freq = this.prevFreq[e.touches[i].identifier];
-          }
-          if(this.props.lockAmp){
-            gain = this.prevGain[e.touches[i].identifier];
-          }
           let index = e.touches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
+          if(this.props.lockFreq){
+            freq = this.prevFreq[index];
+            pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
+          }
+          if(this.props.lockAmp){
+            gain = this.prevGain[index];
+            // pos.x = dbToLinear(gain)*width;
+            pos.x = (1 - getLinearGain(gain))*width;
+            if(pos.x > this.props.width){
+              pos.x = this.props.width;
+            }
+          }
+
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})
         }
@@ -474,6 +482,8 @@ export default class ControlBar extends Component {
         let freq = this.getFreq(yPercent)[0];
           // Deals with rounding issues with the note lines
         let oldFreq = this.synths[0].frequency.value;
+        let oldGain = this.synths[0].volume.value;
+
         for (let note in this.frequencies){
           if (Math.abs(this.frequencies[note] - oldFreq) < 0.1*oldFreq){
             oldFreq = this.frequencies[note]
@@ -484,11 +494,21 @@ export default class ControlBar extends Component {
           // Ramps to new Frequency and Volume
         if(!this.props.lockFreq){
           this.synths[0].frequency.exponentialRampToValueAtTime(freq, this.props.context.currentTime+RAMPVALUE);
+        } else {
+          freq = oldFreq;
+          pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
         }
         // Ramp to new Volume
         if(!this.props.lockAmp){
           this.synths[0].volume.exponentialRampToValueAtTime(gain,
             this.props.context.currentTime+RAMPVALUE);
+        } else {
+          gain = oldGain;
+          pos.x = (1 - getLinearGain(gain))*width;
+          if(pos.x > this.props.width){
+            pos.x = this.props.width;
+          }
+          xPercent = 1 - pos.x / this.props.width;
         }
           //Redraw Labels
           this.ctx.clearRect(0, 0, width, height);
@@ -505,17 +525,11 @@ export default class ControlBar extends Component {
               this.synths[index].volume.exponentialRampToValueAtTime(this.complexVols[i]*xPercent,
                   this.props.context.currentTime+RAMPVALUE);
               let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
-              let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
+              let xPos = (1 - getLinearGain(this.complexVols[i]*xPercent))*width;
               if(xPos > this.props.width){
                 xPos = this.props.width;
               }
-              // CHECK THE INDEX
-              if(this.props.lockFreq){
-                freq = this.prevFreq[e.touches[i].identifier];
-              }
-              if(this.props.lockAmp){
-                gain = this.prevGain[e.touches[i].identifier];
-              }
+
               audioEvent.push({freq: complexFrequency, volume: gain, index});
               this.label(complexFrequency, xPos, yPos, index);
             }
@@ -529,7 +543,6 @@ export default class ControlBar extends Component {
   }
 
   onTouchEnd(e) {
-    console.log("END");
     e.preventDefault(); // Always need to prevent default browser choices
     //e.stopPropagation();
     if(!this.props.sustain){
@@ -544,19 +557,15 @@ export default class ControlBar extends Component {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
-            console.log("INDEX: ", index);
-            for(let j=0; j<NUM_VOICES; j++){
-              console.log(j, this.synths[j].oscillator.state);
-            }
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
             // CHECK THIS
             if(this.props.lockFreq){
-              freq = this.prevFreq[e.touches[i].identifier];
+              freq = this.prevFreq[index];
             }
+
               this.goldIndices.splice(index, 1);
               this.synths[index].triggerRelease();
-              console.log("RELEASE")
               this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);
 
               this.label(freq, pos.x, pos.y, index );
@@ -572,18 +581,18 @@ export default class ControlBar extends Component {
           if(pos.x > this.props.width){
             pos.x = this.props.width;
           }
+          let index = e.touches[i].identifier % NUM_VOICES;
+          if(index < 0) index = NUM_VOICES + index;
           let xPercent = 1 - pos.x / this.props.width;
           let yPercent = 1 - pos.y / this.props.height;
           let freq = this.getFreq(yPercent)[0];
           let gain = getGain(xPercent);
           if(this.props.lockFreq){
-            freq = this.prevFreq[e.touches[i].identifier];
+            freq = this.prevFreq[index];
           }
           if(this.props.lockAmp){
-            gain = this.prevGain[e.touches[i].identifier];
+            gain = this.prevGain[index];
           }
-          let index = e.touches[i].identifier % NUM_VOICES;
-          if(index < 0) index = NUM_VOICES + index;
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index});
 

@@ -485,6 +485,7 @@ export default class ControlBar extends Component {
           this.label(freq, pos.x, pos.y, index );
           audioEvent.push({freq: freq, volume: gain, color: index})
         }
+        // COMPLEX
       } else {
         let pos = getMousePos(this.canvas, e.changedTouches[0]);
         if(pos.x > this.props.width){
@@ -493,7 +494,8 @@ export default class ControlBar extends Component {
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
         // Determines index of the synth needing to change volume/frequency
-        let index = e.changedTouches[0].identifier;
+
+        let index = e.changedTouches[0].identifier % NUM_VOICES;
         if(index < 0) index = NUM_VOICES + index;
 
         // : index;
@@ -575,8 +577,10 @@ export default class ControlBar extends Component {
           this.ctx.clearRect(0, 0, width, height);
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
+            console.log("INDEX PREV", index);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
+            console.log("INDEX POST",index);
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
             // CHECK THIS
@@ -584,7 +588,6 @@ export default class ControlBar extends Component {
               freq = this.prevFreq[index];
             }
 
-              this.goldIndices.splice(index, 1);
               this.synths[index].triggerRelease();
               this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);
 

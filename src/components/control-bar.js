@@ -158,6 +158,12 @@ export default class ControlBar extends Component {
     let gain = getGain(xPercent);
     this.synths[0].volume.value = gain; // Starts the synth at volume = gain
     this.synths[0].triggerAttack(freqs[0]); // Starts the synth at frequency = freq
+    if(this.props.lockFreq){
+      this.prevFreq[0] = freqs[0];
+    }
+    if(this.props.lockAmp){
+      this.prevGain[0] = gain;
+    }
     if(this.props.timbreType === "Complex"){
       for(let i = 0; i<NUM_VOICES - 1; i++){
         let index = (i+1)%NUM_VOICES;
@@ -183,6 +189,8 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     if (this.state.mouseDown) { // Only want to change when mouse is pressed
       // The next few lines are similar to onMouseDown
+      let resolutionMax = 20000;
+      let resolutionMin = 20;
       let {height, width} = this.props;
       let pos = getMousePos(this.canvas, e);
       let yPercent = 1 - pos.y / height;
@@ -190,20 +198,36 @@ export default class ControlBar extends Component {
       let gain = getGain(xPercent);
       // let freq = this.getFreq(yPercent)[0];
       let freqs = this.getFreq(yPercent);
-      // Remove previous gold indices and update them to new positions
-      // this.goldIndices.splice(this.state.currentVoice - 1, 1);
+      if(this.props.lockFreq){
+        freqs[0] = this.prevFreq[0];
+        pos.y = freqToIndex(freqs[0], resolutionMax, resolutionMin, height);
+      }
+
+      if(this.props.lockAmp){
+        gain = this.prevGain[0];
+        pos.x = (1 - getLinearGain(gain))*width;
+        if(pos.x > this.props.width){
+          pos.x = this.props.width;
+        }
+      }
+
       if(this.props.scaleOn){
         // Jumps to new Frequency and Volume
         this.synths[0].frequency.value = freqs[0];
         this.synths[0].volume.value = gain;
       } else {
         // Ramps to new Frequency and Volume
-        if(!this.props.sustain){
+        if(!this.props.lockFreq){
           this.synths[0].frequency.exponentialRampToValueAtTime(freqs[0], this.props.context.currentTime+RAMPVALUE);
+
         }
         // Ramp to new Volume
+        if(!this.props.lockAmp){
         this.synths[0].volume.exponentialRampToValueAtTime(gain,
           this.props.context.currentTime+RAMPVALUE);
+
+        }
+
         if(this.props.timbreType === "Complex"){
           for(let i = 0; i<NUM_VOICES - 1; i++){
             let index = (i+1)%NUM_VOICES;
@@ -242,7 +266,6 @@ export default class ControlBar extends Component {
       }
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
-      this.setState({mouseDown: false });
       this.goldIndices = [];
 
       // Clears the label
@@ -253,9 +276,7 @@ export default class ControlBar extends Component {
       }
       this.props.onAudioEvent([{}]);
     }
-    if(this.props.sustain){
-      this.setState({sustain: true});
-    }
+    this.setState({mouseDown: false });
 
 
   }
@@ -267,7 +288,6 @@ export default class ControlBar extends Component {
       this.synths[0].triggerRelease(); // Relase frequency, volume goes to -Infinity
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
-      this.setState({mouseDown: false });
       this.goldIndices = [];
       if(this.props.timbreType === "Complex"){
         this.releaseAll(true);
@@ -280,6 +300,7 @@ export default class ControlBar extends Component {
       }
       this.props.onAudioEvent([{}]);
     }
+    this.setState({mouseDown: false });
 
 
   }
@@ -455,7 +476,6 @@ export default class ControlBar extends Component {
           }
           if(this.props.lockAmp){
             gain = this.prevGain[index];
-            // pos.x = dbToLinear(gain)*width;
             pos.x = (1 - getLinearGain(gain))*width;
             if(pos.x > this.props.width){
               pos.x = this.props.width;
@@ -530,7 +550,7 @@ export default class ControlBar extends Component {
                 xPos = this.props.width;
               }
 
-              audioEvent.push({freq: complexFrequency, volume: gain, index});
+              audioEvent.push({freq: complexFrequency, volume: gain, color: index});
               this.label(complexFrequency, xPos, yPos, index);
             }
           }

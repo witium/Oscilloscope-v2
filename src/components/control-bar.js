@@ -327,7 +327,11 @@ export default class ControlBar extends Component {
         let gain = getGain(xPercent);
         let freq = this.getFreq(yPercent)[0];
         let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
+        console.log("INDEX PREV", newVoice, e.changedTouches[i].identifier);
+
         if(newVoice < 0) newVoice = NUM_VOICES + newVoice;
+        console.log("INDEX POST", newVoice);
+
         if(this.props.lockFreq){
           this.prevFreq[newVoice] = freq;
         }
@@ -580,9 +584,7 @@ export default class ControlBar extends Component {
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
-            console.log("INDEX PREV", index, e.changedTouches[i].identifier);
             if(index < 0) index = NUM_VOICES + index;
-            console.log("INDEX POST",index);
             let yPercent = 1 - pos.y / this.props.height;
             let freq = this.getFreq(yPercent)[0];
             // CHECK THIS

@@ -577,8 +577,8 @@ export default class ControlBar extends Component {
           this.ctx.clearRect(0, 0, width, height);
           for (let i = 0; i < e.changedTouches.length; i++) {
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
-            console.log("INDEX PREV", index);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
+            console.log("INDEX PREV", index, e.changedTouches[i].identifier);
             if(index < 0) index = NUM_VOICES + index;
             console.log("INDEX POST",index);
             let yPercent = 1 - pos.y / this.props.height;

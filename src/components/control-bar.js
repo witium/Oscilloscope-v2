@@ -3,10 +3,8 @@ import "../styles/control-bar.css"
 import Tone from 'tone';
 import generateScale from '../util/generateScale';
 
-import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, dbToLinear, getLinearGain} from "../util/conversions";
-import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
-const ticks = 7;
-const yLabelOffset = 5;
+import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, getLinearGain} from "../util/conversions";
+import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6} from "../util/colors";
 const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
 const CHROMATIC = 3;
@@ -422,7 +420,7 @@ export default class ControlBar extends Component {
       let audioEvent = [];
 
       // For each changed touch, do the same as onMouseMove
-      if(this.props.timbreType == "Pure"){
+      if(this.props.timbreType === "Pure"){
         for (let i = 0; i < e.changedTouches.length; i++) {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
           if(pos.x > this.props.width){
@@ -620,7 +618,7 @@ export default class ControlBar extends Component {
           audioEvent.push({freq: freq, volume: gain, color: index});
 
         }
-        if(e.touches.length == 0){
+        if(e.touches.length === 0){
           this.setState({touch: false});
           audioEvent.push({});
         }
@@ -852,31 +850,17 @@ generateComplexWeights(){
     let vol = getGain(Math.random())- 10;
     let harmonic = Math.round(Math.random()*10)+2;
     let breakCheck = 100;
-    while(this.complexHarmonics.indexOf(harmonic)!= -1){
+    while(this.complexHarmonics.indexOf(harmonic) !== -1){
       harmonic = Math.round(Math.random()*8)+2;
       breakCheck--;
-      if(breakCheck==0) break;
+      if(breakCheck===0) break;
     }
     this.complexVols[i] = vol;
     this.complexHarmonics[i] = harmonic;
   }
 }
 
-// lockFrequencies(){
-//   for(let i=0; i<NUM_VOICES; i++){
-//     this.prevFreq = this.synths[i].frequency.value;
-//   }
-// }
-//
-// lockGains(){
-//   for(let i=0; i<NUM_VOICES; i++){
-//     this.prevGain = this.synths[i].volume.value;
-//   }
-// }
-
-
   render() {
-    let cssClass = 'controlbar-container'
 
     return (
         <canvas

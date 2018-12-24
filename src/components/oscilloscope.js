@@ -4,10 +4,6 @@ import {dbToLinear} from "../util/conversions";
 
 import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
 
-const frequency = [0];
-const amplitude = [0];
-const nFingers = 0;
-
 export default class Oscilloscope extends Component {
   constructor(props) {
     super(props);
@@ -78,7 +74,7 @@ export default class Oscilloscope extends Component {
 
       // We draw the blue wave line
       this.ctx.beginPath();
-      if(signals.length == 1){
+      if(signals.length === 1){
         this.setStyleWidthOpacity(this.ctx, color, '5', 1);
       } else {
         this.setStyleWidthOpacity(this.ctx, color, '1', 1);
@@ -145,7 +141,7 @@ export default class Oscilloscope extends Component {
               volume = 0;
             }
             y += (volume * 350 * Math.cos(k * (x + v * t)));
-            if(i == 0){
+            if(i === 0){
             }
         }
         //let y = 0;
@@ -330,15 +326,6 @@ export default class Oscilloscope extends Component {
   // Waves canvas drawing (pure waves)
   // TO DO: insert the canvas and the context as arguments so that if one changes, we do not have to be changing everything in the function.
   drawPureWavesCanvas() {
-    let t = 0;
-    let wavesCanvasRect = this.canvas.getBoundingClientRect();
-    let wavesCanvasHeight = this.props.height;
-    let wavesCanvasWidth = this.props.width;
-    let numberPoints;
-    let sliceWidth;
-    let freqInfoMessage;
-    let opacityLevel = 0.65;
-
     this.createGrid(this.ctx, this.canvas);
 
   };

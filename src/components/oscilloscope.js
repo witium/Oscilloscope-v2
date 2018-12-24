@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import "../styles/oscilloscope.css";
 import {dbToLinear} from "../util/conversions";
 
-import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLORTOTAL} from "../util/colors";
+import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
 
 const frequency = [0];
 const amplitude = [0];
@@ -65,7 +65,7 @@ export default class Oscilloscope extends Component {
           color = WAVECOLOR5;
           break;
         case 5:
-          color = WAVECOLOR1;
+          color = WAVECOLOR6;
           break;
         default:
           color = WAVECOLOR1;

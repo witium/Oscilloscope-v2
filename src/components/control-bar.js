@@ -4,7 +4,7 @@ import Tone from 'tone';
 import generateScale from '../util/generateScale';
 
 import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, dbToLinear, getLinearGain} from "../util/conversions";
-import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLORTOTAL} from "../util/colors";
+import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
 const ticks = 7;
 const yLabelOffset = 5;
 const NUM_VOICES = 6;
@@ -327,10 +327,8 @@ export default class ControlBar extends Component {
         let gain = getGain(xPercent);
         let freq = this.getFreq(yPercent)[0];
         let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
-        console.log("INDEX PREV", newVoice, e.changedTouches[i].identifier);
 
         if(newVoice < 0) newVoice = NUM_VOICES + newVoice;
-        console.log("INDEX POST", newVoice);
 
         if(this.props.lockFreq){
           this.prevFreq[newVoice] = freq;
@@ -571,9 +569,7 @@ export default class ControlBar extends Component {
   onTouchEnd(e) {
     e.preventDefault(); // Always need to prevent default browser choices
     //e.stopPropagation();
-    console.log(this.props.sustain)
     if(!this.props.sustain){
-      console.log("HIs")
       let {width, height} = this.props;
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
         if(this.props.timbreType === "Complex"){
@@ -824,7 +820,7 @@ label(freq, x, y, index) {
       color = WAVECOLOR5;
       break;
     case 5:
-      color = WAVECOLOR1;
+      color = WAVECOLOR6;
       break;
 
   }

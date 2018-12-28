@@ -53,6 +53,10 @@ handleTimbreToggle = () =>{
     this.setState({timbre: true, timbreType: 'Complex'});
     this.controlbar.current.generateComplexWeights();
   }
+  if(this.state.sustain){
+    this.controlbar.current.sustainChangeTimbre(!this.state.timbre);
+  }
+
 }
 
 handlesustainToggle = () => {

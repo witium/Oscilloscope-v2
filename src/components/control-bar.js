@@ -9,6 +9,8 @@ const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
 const CHROMATIC = 3;
 
+const resolutionMax = 20000;
+const resolutionMin = 20;
 
 export default class ControlBar extends Component {
   constructor(props) {
@@ -27,7 +29,6 @@ export default class ControlBar extends Component {
       feedback: false,
       amOn: false,
       fmOn: false,
-      sustain: false
     }
   }
 
@@ -187,8 +188,6 @@ export default class ControlBar extends Component {
     e.preventDefault(); // Always need to prevent default browser choices
     if (this.state.mouseDown) { // Only want to change when mouse is pressed
       // The next few lines are similar to onMouseDown
-      let resolutionMax = 20000;
-      let resolutionMin = 20;
       let {height, width} = this.props;
       let pos = getMousePos(this.canvas, e);
       let yPercent = 1 - pos.y / height;
@@ -304,17 +303,18 @@ export default class ControlBar extends Component {
   }
 
   onTouchStart(e){
-    // console.log("START")
+
+    console.log("START");
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     if(e.touches.length > NUM_VOICES ){
       return;
     }
     let audioEvent = [];
-    let resolutionMax = 20000;
-    let resolutionMin = 20;
     let {height, width} = this.props;
-
+    if(this.props.sustain && e.touches.length !== 1){
+      return;
+    }
     // For each finger, do the same as above in onMouseDown
     if(this.props.timbreType === "Pure"){
       for (let i = 0; i < e.changedTouches.length; i++) {
@@ -327,6 +327,9 @@ export default class ControlBar extends Component {
         let newVoice = e.changedTouches[i].identifier % NUM_VOICES;
 
         if(newVoice < 0) newVoice = NUM_VOICES + newVoice;
+        if(this.props.sustain){
+          newVoice = 0;
+        }
 
         if(this.props.lockFreq){
           this.prevFreq[newVoice] = freq;
@@ -338,7 +341,9 @@ export default class ControlBar extends Component {
         this.setState({touch: true});
         this.synths[newVoice].volume.value = gain;
         this.synths[newVoice].triggerAttack(freq);
-
+        if(this.props.sustain){
+          break;
+        }
 
       }
       this.ctx.clearRect(0, 0, this.props.width, this.props.height);
@@ -352,11 +357,14 @@ export default class ControlBar extends Component {
         let index = e.touches[i].identifier % NUM_VOICES;
         if(index < 0) index = NUM_VOICES + index;
         this.label(freq, pos.x, pos.y, index );
-        audioEvent.push({freq: freq, volume: gain, color: index})
+        audioEvent.push({freq: freq, volume: gain, color: index});
+        if(this.props.sustain){
+          break;
+        }
       }
     } else {
       // COMPLEX
-      if(!this.state.touch){
+      if(e.touches.length==1){
         let pos = getMousePos(this.canvas, e.changedTouches[0]);
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
@@ -411,10 +419,10 @@ export default class ControlBar extends Component {
     if(e.changedTouches.length > NUM_VOICES ){
       return;
     }
-    let resolutionMax = 20000;
-    let resolutionMin = 20;
     let{height, width} = this.props;
-
+    if(this.props.sustain && e.touches.length !== 1){
+      return;
+    }
     // If touch is pressed (Similar to mouseDown = true, although there should never be a case where this is false)
     if (this.state.touch) {
       let audioEvent = [];
@@ -433,6 +441,9 @@ export default class ControlBar extends Component {
           let index = e.changedTouches[i].identifier%NUM_VOICES;
           // : index;
           if(index < 0) index = NUM_VOICES + index;
+          if(this.props.sustain){
+            index = 0;
+          }
 
           let gain = getGain(xPercent);
           let freq = this.getFreq(yPercent)[0];
@@ -454,6 +465,9 @@ export default class ControlBar extends Component {
           this.synths[index].volume.exponentialRampToValueAtTime(gain,
             this.props.context.currentTime+RAMPVALUE);
           }
+          if(this.props.sustain){
+            break;
+          }
         }
         //Redraw Labels
         this.ctx.clearRect(0, 0, width, height);
@@ -470,6 +484,7 @@ export default class ControlBar extends Component {
           let gain = getGain(xPercent);
           let index = e.touches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
+
           if(this.props.lockFreq){
             freq = this.prevFreq[index];
             pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
@@ -483,7 +498,7 @@ export default class ControlBar extends Component {
           }
 
           this.label(freq, pos.x, pos.y, index );
-          audioEvent.push({freq: freq, volume: gain, color: index})
+          audioEvent.push({freq: freq, volume: gain, color: index});
         }
         // COMPLEX
       } else {
@@ -497,7 +512,6 @@ export default class ControlBar extends Component {
 
         let index = e.changedTouches[0].identifier % NUM_VOICES;
         if(index < 0) index = NUM_VOICES + index;
-
         // : index;
 
         let gain = getGain(xPercent);
@@ -567,36 +581,62 @@ export default class ControlBar extends Component {
   onTouchEnd(e) {
     e.preventDefault(); // Always need to prevent default browser choices
     //e.stopPropagation();
-    if(!this.props.sustain){
+    // if(!this.props.sustain){
       let {width, height} = this.props;
+      let audioEvent = [];
+      if(this.props.sustain && e.touches.length !== 0){
+        return;
+      }
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
         if(this.props.timbreType === "Complex"){
-          this.synths[0].triggerRelease();
-          this.releaseAll(true);
+          if(!this.props.sustain){
+            let index = e.changedTouches[0].identifier % NUM_VOICES;
+            if(index < 0) index = NUM_VOICES + index;
+            if(index === 0){
+              this.synths[0].triggerRelease();
+              this.releaseAll(true);
+            }
+          }
         } else {
           this.ctx.clearRect(0, 0, width, height);
           for (let i = 0; i < e.changedTouches.length; i++) {
+
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
             let yPercent = 1 - pos.y / this.props.height;
+            let xPercent = 1 - pos.x / this.props.width;
             let freq = this.getFreq(yPercent)[0];
-            // CHECK THIS
+            let gain = getGain(xPercent);
             if(this.props.lockFreq){
               freq = this.prevFreq[index];
+              pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
+
             }
-
-              this.synths[index].triggerRelease();
-              this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);
-
-              this.label(freq, pos.x, pos.y, index );
+            if(this.props.lockAmp){
+              gain = this.prevGain[index];
+              pos.x = (1 - getLinearGain(gain))*width;
+              if(pos.x > this.props.width){
+                pos.x = this.props.width;
+              }
+            }
+            if(this.props.sustain){
+              audioEvent.push({freq: freq, volume: gain, color: index});
               this.renderCanvas();
+              this.label(freq, pos.x, pos.y, index );
+              this.props.onAudioEvent(audioEvent);
+              break;
+
+            } else {
+                this.synths[index].triggerRelease();
+                this.synths[index].volume.linearRampToValueAtTime(-100, this.props.context.currentTime+2);
+                this.renderCanvas();
+              }
+
             }
-        }
 
 
-
-        let audioEvent = []
+        if(!this.props.sustain){
         for (let i = 0; i < e.touches.length; i++) {
           let pos = getMousePos(this.canvas, e.touches[i]);
           if(pos.x > this.props.width){
@@ -624,6 +664,7 @@ export default class ControlBar extends Component {
         }
         this.props.onAudioEvent(audioEvent);
       }
+    }
   }
 
 
@@ -631,8 +672,6 @@ export default class ControlBar extends Component {
   // Also deals with snapping it to a scale if scale mode is on
   getFreq(index) {
     // let {resolutionMax, resolutionMin, height} = this.props;
-    let resolutionMax = 20000;
-    let resolutionMin = 20;
     let height = this.props.height;
     let freq = getFreq(index, resolutionMin, resolutionMax);
     if (this.props.scaleOn && !this.state.checkButton) {
@@ -848,7 +887,9 @@ releaseAll(complex){
     this.ctx.clearRect(0, 0, this.props.width, this.props.height);
     this.renderCanvas();
     this.props.onAudioEvent([{}]);
-    this.setState({sustain: false, touch: false, mouseDown: false});
+    if(!this.props.sustain){
+      this.setState({touch: false, mouseDown: false});
+    }
 }
 
 generateComplexWeights(){
@@ -865,10 +906,51 @@ generateComplexWeights(){
     this.complexHarmonics[i] = harmonic;
   }
 }
-sustainPureToComplex(){
-}
 
-sustainComplexToPure(){
+sustainChangeTimbre(timbre){
+  if(this.state.touch){
+    let {height, width} = this.props;
+    let audioEvent = [];
+    let freq = this.synths[0].frequency.value;
+    let gain = this.synths[0].volume.value;
+    let yPos = freqToIndex(freq, resolutionMax, resolutionMin, height);
+    let xPercent = 1 - getLinearGain(gain);
+    let xPos = xPercent * this.props.width;
+
+    if(this.props.lockFreq){
+      this.prevFreq[0] = freq;
+    }
+    if(this.props.lockAmp){
+      this.prevGain[0] = gain;
+    }
+    // COMPLEX
+    if(timbre){
+      this.generateComplexWeights();
+      // console.log(0);
+      for(let i = 0; i<NUM_VOICES - 1; i++){
+        let index = (i+1)%NUM_VOICES;
+        if(index < 0) index = NUM_VOICES + index;
+        let complexFrequency = freq*this.complexHarmonics[i];
+        if(complexFrequency < 20000){
+          this.synths[index].triggerAttack(complexFrequency);
+          this.synths[index].volume.value = this.complexVols[i]*xPercent;
+          let yPos = freqToIndex(complexFrequency, resolutionMax, resolutionMin, height);
+          let xPos = (1 - getLinearGain(this.complexVols[i]*xPercent)) * width;
+          // let xPos = dbToLinear(this.complexVols[i]*xPercent)*width;
+          audioEvent.push({freq: complexFrequency, volume: gain, color: index});
+          this.label(complexFrequency, xPos, yPos, index);
+        }
+      }
+    }
+    // PURE
+    else {
+      this.releaseAll(true);
+      this.label(freq, xPos, yPos, 0);
+      audioEvent.push({freq: freq, volume: gain, color: 0});
+
+    }
+    this.props.onAudioEvent(audioEvent);
+  }
 
 }
 

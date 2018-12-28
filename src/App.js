@@ -28,67 +28,71 @@ class App extends Component {
   }
 
 
-handleResize= () => {
-  this.setState({width: window.innerWidth, height: window.innerHeight});
-}
-
-startOscilloscope = () => {
-  if (!this.state.started){
-    audioContext = new(window.AudioContext || window.webkitAudioContext)();
-    this.setState({started: true});
+  handleResize= () => {
+    this.setState({width: window.innerWidth, height: window.innerHeight});
   }
-}
 
-onAudioEvent = (signals) =>{
+  startOscilloscope = () => {
+    if (!this.state.started){
+      audioContext = new(window.AudioContext || window.webkitAudioContext)();
+      this.setState({started: true});
+    }
+  }
 
-  this.oscilloscope.current.renderCanvas(signals)
-}
+  onAudioEvent = (signals) =>{
+
+    this.oscilloscope.current.renderCanvas(signals)
+  }
 
 
-
-handleTimbreToggle = () =>{
-  if(this.state.timbre){
+  handleTimbrePure = () =>{
     this.setState({timbre: false, timbreType: 'Pure'});
-  } else {
-    this.setState({timbre: true, timbreType: 'Complex'});
-    this.controlbar.current.generateComplexWeights();
+    if(this.state.sustain){
+      this.controlbar.current.sustainChangeTimbre(false);
+    }
   }
-  if(this.state.sustain){
-    this.controlbar.current.sustainChangeTimbre(!this.state.timbre);
+  handleTimbreComplex = () =>{
+      this.setState({timbre: true, timbreType: 'Complex'});
+      if(this.state.sustain){
+        this.controlbar.current.sustainChangeTimbre(true);
+    } else {
+      this.controlbar.current.generateComplexWeights();
+    }
+
   }
 
-}
-
-handlesustainToggle = () => {
-  if(this.state.sustain){
-    this.controlbar.current.releaseAll(false);
+  handlesustainToggle = () => {
+    if(this.state.sustain){
+      this.controlbar.current.releaseAll(false);
+    }
+    this.setState({sustain: !this.state.sustain});
   }
-  this.setState({sustain: !this.state.sustain});
-}
 
-handlelockFreqToggle = () => {
-  //this.controlbar.current.lockFrequencies();
-  this.setState({lockFreq: !this.state.lockFreq});
+  handlelockFreqToggle = () => {
+    //this.controlbar.current.lockFrequencies();
+    this.setState({lockFreq: !this.state.lockFreq});
 
-}
-handlelockAmpToggle = () => {
-  // this.controlbar.current.lockGains();
-  this.setState({lockAmp: !this.state.lockAmp});
-}
+  }
+  handlelockAmpToggle = () => {
+    // this.controlbar.current.lockGains();
+    this.setState({lockAmp: !this.state.lockAmp});
+  }
 
-restart = () =>{
-  this.setState({started: false});
-  this.handleResize();
-}
+  restart = () =>{
+    this.setState({started: false});
+    this.handleResize();
+  }
 
 
   render() {
       // let backgroundColor = "yellow";
-      let color, freqIcon, ampIcon;
+      let pureColor, complexColor, freqIcon, ampIcon;
       if(this.state.timbre){
-        color = "red";
+        pureColor = "red";
+        complexColor = "teal";
       } else {
-        color = "teal";
+        pureColor = "teal";
+        complexColor = "red";
       }
       if(this.state.lockFreq){
         freqIcon = "lock"
@@ -127,9 +131,15 @@ restart = () =>{
             <Button.Group className="button-group-container">
               <Button
               className="timbre-button"
-              color={color}
-              onClick={this.handleTimbreToggle}>
-              {this.state.timbreType}
+              color={pureColor}
+              onClick={this.handleTimbrePure}>
+              Pure
+              </Button>
+              <Button
+              className="timbre-button"
+              color={complexColor}
+              onClick={this.handleTimbreComplex}>
+              Complex
               </Button>
 
               <Button

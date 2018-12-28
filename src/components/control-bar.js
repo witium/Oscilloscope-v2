@@ -925,6 +925,9 @@ sustainChangeTimbre(timbre){
     }
     // COMPLEX
     if(timbre){
+      this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+      this.renderCanvas();
+      this.label(freq, xPos, yPos, 0);
       this.generateComplexWeights();
       // console.log(0);
       for(let i = 0; i<NUM_VOICES - 1; i++){

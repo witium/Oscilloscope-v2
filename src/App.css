@@ -14,7 +14,7 @@ body {
 
 @media only screen and (max-width: 850px) {
   .combined-wave-info {
-    border-top: 2px solid #E8E8E8!important;
+    border-top: 2px solid white!important;
     top: 11%;
     bottom: 82%!important;
     width: 20%!important;

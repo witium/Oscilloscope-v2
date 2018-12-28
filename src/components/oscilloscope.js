@@ -290,31 +290,31 @@ export default class Oscilloscope extends Component {
     let lengthLittleLines = 10;
 
     // Draw yellow scale
-    ctx.beginPath();
-    this.setStyleWidthOpacity(ctx, "rgb(255, 233, 0)", '3', 1);
-    ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY);
-    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY);
-
-    ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
-    ctx.lineTo(midPoint.x + offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
-
-    ctx.moveTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
-    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
-
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.beginPath();
-
-    ctx.globalAlpha = 1;
-    ctx.font = '16px Verdana';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'white';
-
-    ctx.fillText('25 ms', midPoint.x + lengthScale / 2 - offsetX / 2, canvasHeight - offsetY - lengthLittleLines / 2);
-
-    ctx.stroke();
-    ctx.closePath();
+    // ctx.beginPath();
+    // this.setStyleWidthOpacity(ctx, "rgb(255, 233, 0)", '3', 1);
+    // ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY);
+    // ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY);
+    //
+    // ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
+    // ctx.lineTo(midPoint.x + offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
+    //
+    // ctx.moveTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
+    // ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
+    //
+    // ctx.stroke();
+    // ctx.closePath();
+    //
+    // ctx.beginPath();
+    //
+    // ctx.globalAlpha = 1;
+    // ctx.font = '16px Verdana';
+    // ctx.textAlign = 'center';
+    // ctx.fillStyle = 'white';
+    //
+    // ctx.fillText('25 ms', midPoint.x + lengthScale / 2 - offsetX / 2, canvasHeight - offsetY - lengthLittleLines / 2);
+    //
+    // ctx.stroke();
+    // ctx.closePath();
   }
 
   setStyleWidthOpacity(ctx, style, width, opacity) {

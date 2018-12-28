@@ -3,7 +3,7 @@ import "../styles/control-bar.css"
 import Tone from 'tone';
 import generateScale from '../util/generateScale';
 
-import {getFreq, getGain, freqToIndex, getMousePos, convertToLog, logspace, getLinearGain} from "../util/conversions";
+import {getFreq, getGain, freqToIndex, getMousePos, logspace, getLinearGain} from "../util/conversions";
 import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6} from "../util/colors";
 const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
@@ -786,14 +786,20 @@ export default class ControlBar extends Component {
 
   // Helper method that generates a label for the frequency or the scale note
 label(freq, x, y, index) {
-  const offset = 10;
+  let xOffset = 70;
+  let yOffset = 20;
   this.ctx.font = '20px Inconsolata';
   this.ctx.fillStyle = 'white';
+  // 90%
+  const switchLabelSide = (this.props.width)*0.9;
+  if(x+xOffset > switchLabelSide){
+    xOffset = -xOffset/2;
+  }
   if(true){//sthis.props.soundOn){
     if (true){//!this.props.scaleOn || this.state.checkButton) {
-      this.ctx.fillText(freq + ' Hz', x + offset, y - offset);
+      this.ctx.fillText(freq + ' Hz', x + xOffset, y - yOffset);
     } else {
-      this.ctx.fillText(this.scaleLabel, x + offset, y - offset);
+      this.ctx.fillText(this.scaleLabel, x + xOffset, y - yOffset);
     }
     // Draw Circle for point
   const startingAngle = 0;
@@ -859,6 +865,14 @@ generateComplexWeights(){
     this.complexHarmonics[i] = harmonic;
   }
 }
+sustainPureToComplex(){
+}
+
+sustainComplexToPure(){
+
+}
+
+
 
   render() {
 

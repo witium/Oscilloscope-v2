@@ -36,83 +36,86 @@ export default class Oscilloscope extends Component {
 
   renderCanvas = (signals) =>{
     this.drawPureWavesCanvas();
-    let t = 0;
+    // let t = 0;
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;
 
-    for (let signal of signals){
+    // // NEW CHANGE: ONLY SUM COLOR
+    // for (let signal of signals){
+    //
+    //   // We get the x-distance between each point by dividing the total width by the number of points
+    //   let color;
+    //   switch (signal.color) {
+    //     case 0:
+    //       color = WAVECOLOR1;
+    //       break;
+    //     case 1:
+    //       color = WAVECOLOR2;
+    //       break;
+    //     case 2:
+    //       color = WAVECOLOR3;
+    //       break;
+    //     case 3:
+    //       color = WAVECOLOR4;
+    //       break;
+    //     case 4:
+    //       color = WAVECOLOR5;
+    //       break;
+    //     case 5:
+    //       color = WAVECOLOR6;
+    //       break;
+    //     default:
+    //       color = WAVECOLOR1;
+    //       break;
+    //     }
+    //
+    //   /*
+    //   let maxHeight = calculateMaximumPureSingleWave(numberPoints, sliceWidth);
+    //   let scaleProportion = calculateProportionWave(maxHeight*2);
+    //   */
+    //
+    //   // We draw the blue wave line
+    //   this.ctx.beginPath();
+    //   if(signals.length === 1){
+    //     this.setStyleWidthOpacity(this.ctx, color, '5', 1);
+    //   } else {
+    //     this.setStyleWidthOpacity(this.ctx, color, '1', 1);
+    //   }
+    //
+    //   // x starts at 0 (first point is at 0)
+    //   let x = 0;
+    //   // For each of the points that we have
+    //   let volume = dbToLinear(signal.volume);
+    //   if(isNaN(volume)){
+    //     volume = 0;
+    //   }
+    //   let wavelength = 100 * this.props.height / signal.freq;
+    //   let v = wavelength / signal.freq;
+    //   // v = 0;
+    //   let k = 2 * Math.PI / wavelength;
+    //   for (let i = 0; i < numberPoints; i++) {
+    //     let y = 0;
+    //     // Calculate the location of the point using the equation of the wave.
+    //     y+= volume * 350 * Math.cos(k * (x + v * t))
+    //     y += this.props.height / 2;
+    //
+    //     // We draw the point in the canvas
+    //     if (i === 0) {
+    //       this.ctx.moveTo(x, y);
+    //     } else {
+    //       this.ctx.lineTo(x, y);
+    //
+    //       // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
+    //       // wavesCanvasCtx.fillRect(x,y,1,1);
+    //     }
+    //     // x moves the x-distance to the right
+    //     x += sliceWidth;
+    //   }
+    //   this.ctx.stroke();
+    // }
 
-      // We get the x-distance between each point by dividing the total width by the number of points
-      let color;
-      switch (signal.color) {
-        case 0:
-          color = WAVECOLOR1;
-          break;
-        case 1:
-          color = WAVECOLOR2;
-          break;
-        case 2:
-          color = WAVECOLOR3;
-          break;
-        case 3:
-          color = WAVECOLOR4;
-          break;
-        case 4:
-          color = WAVECOLOR5;
-          break;
-        case 5:
-          color = WAVECOLOR6;
-          break;
-        default:
-          color = WAVECOLOR1;
-          break;
-        }
-      /*
-      let maxHeight = calculateMaximumPureSingleWave(numberPoints, sliceWidth);
-      let scaleProportion = calculateProportionWave(maxHeight*2);
-      */
-
-      // We draw the blue wave line
-      this.ctx.beginPath();
-      if(signals.length === 1){
-        this.setStyleWidthOpacity(this.ctx, color, '5', 1);
-      } else {
-        this.setStyleWidthOpacity(this.ctx, color, '1', 1);
-      }
-
-      // x starts at 0 (first point is at 0)
-      let x = 0;
-      // For each of the points that we have
-      let volume = dbToLinear(signal.volume);
-      if(isNaN(volume)){
-        volume = 0;
-      }
-      let wavelength = 100 * this.props.height / signal.freq;
-      let v = wavelength / signal.freq;
-      // v = 0;
-      let k = 2 * Math.PI / wavelength;
-      for (let i = 0; i < numberPoints; i++) {
-        let y = 0;
-        // Calculate the location of the point using the equation of the wave.
-        y+= volume * 350 * Math.cos(k * (x + v * t))
-        y += this.props.height / 2;
-
-        // We draw the point in the canvas
-        if (i === 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-
-          // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
-          // wavesCanvasCtx.fillRect(x,y,1,1);
-        }
-        // x moves the x-distance to the right
-        x += sliceWidth;
-      }
-      this.ctx.stroke();
-    }
-
-    if(signals.length > 1){
+    // NEW CHANGE: ONLY SUM COLOR
+    // if(signals.length > 1){
       // Draw combined wave
       this.ctx.beginPath();
       this.setStyleWidthOpacity(this.ctx, WAVECOLORTOTAL, '5', 1);
@@ -170,7 +173,7 @@ export default class Oscilloscope extends Component {
         x += sliceWidth;
       }
       this.ctx.stroke();
-    }
+    // }
   }
 
   // Time variable

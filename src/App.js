@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Icon } from 'semantic-ui-react'
+import { Button, Icon, Label } from 'semantic-ui-react'
 
 
 import MainMenu from './components/menu';
@@ -23,7 +23,9 @@ class App extends Component {
       timbreType: 'Pure',
       sustain: false,
       lockFreq: false,
-      lockAmp: false
+      lockAmp: false,
+      showCombinedWaveInfo: false,
+      combinedFrequency: 0
     }
   }
 
@@ -78,6 +80,14 @@ class App extends Component {
     this.setState({lockAmp: !this.state.lockAmp});
   }
 
+  drawCombinedInfo = frequency =>{
+    if(!isNaN(frequency) && isFinite(frequency) && frequency > 0){
+      this.setState({showCombinedWaveInfo: true, combinedFrequency: frequency})
+    } else {
+      this.setState({showCombinedWaveInfo: false})
+    }
+  }
+
   restart = () =>{
     this.setState({started: false});
     this.handleResize();
@@ -126,8 +136,19 @@ class App extends Component {
             height={this.state.height}
             handleResize={this.handleResize}
             renderSignals={this.state.renderSignals}
+            drawCombinedInfo={this.drawCombinedInfo}
             restart={this.restart}
             ref={this.oscilloscope}/>
+            {this.state.showCombinedWaveInfo &&
+              <Label className="combined-wave-info">
+                <div className="combined-wave-title">Frequency</div>
+                <div>{this.state.combinedFrequency} Hz (cycles/second) </div>
+                <div className="waveform-container">
+                  <div className="waveform-title">Waveform:</div>
+                  <hr className="waveform-legend"/>
+                </div>
+              </Label>
+            }
             <Button.Group className="button-group-container">
               <Button
               className="timbre-button"

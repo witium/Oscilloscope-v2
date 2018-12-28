@@ -32,56 +32,59 @@ canvas {
   position: absolute;
   bottom: 0.5%;
   right: 0%;
-  /* transform: translateX(-50%); */
 
-  /* right: 25%; */
-  /* width: 7em; */
-  /* min-height: 40px; */
 }
 
 
 .sustain-button {
   z-index: 10;
-  /* position: absolute; */
-  /* bottom: 0.5%; */
-  /* right: 0%; */
-  /* width: 7em; */
-  /* min-height: 40px; */
+
 }
 .lock-freq-button {
-  /* z-index: 10;
-  position: absolute;
-  bottom: 0.5%;
-  right: 8%;
-  width: 7em;
-  font-size: 0.85em!important;
-  height: 3em; */
+
 
 }
 
 .lock-amp-button {
-  /* z-index: 10;
-  position: absolute;
-  bottom: 3.4em;
-  right: 3em;
-  width: 7em;
-  font-size: 0.85em!important;
-  height: 3em; */
+
 
 }
 
 .timbre-button {
-  /* z-index: 10; */
-  /* position: absolute; */
-  /* bottom: 0.5%; */
-  /* right: 13em;/ */
+
   width: 7em;
 }
+
+
 
 .timbre-button:active {
   background-color: "red"!important;
 }
+.combined-wave-title {
+  font-size: 1.5em;
+  margin-bottom: 0.25em;
 
+}
+.combined-wave-info {
+  position: absolute;
+  z-index: 11;
+  border: 2px solid red;
+  bottom: 0%;
+  left: 25%;
+  width: 12%;
+  /* height: 5%; */
+}
+.waveform-container {
+  display: flex;
+}
+.waveform-title {
+  flex: 1;
+  margin-right: 10%;
+}
+.waveform-legend {
+  border: 2px solid yellow;
+  flex: 3;
+}
 .flashing {
   animation: blinker 1.5s linear infinite;
   position: absolute;

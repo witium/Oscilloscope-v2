@@ -584,18 +584,19 @@ export default class ControlBar extends Component {
     // if(!this.props.sustain){
       let {width, height} = this.props;
       let audioEvent = [];
+      console.log("END")
       if(this.props.sustain && e.touches.length !== 0){
         return;
       }
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
         if(this.props.timbreType === "Complex"){
           if(!this.props.sustain){
-            let index = e.changedTouches[0].identifier % NUM_VOICES;
-            if(index < 0) index = NUM_VOICES + index;
-            if(index === 0){
+            // let index = e.changedTouches[0].identifier % NUM_VOICES;
+            // if(index < 0) index = NUM_VOICES + index;
+            // if(index === 0){
               this.synths[0].triggerRelease();
               this.releaseAll(true);
-            }
+            // }
           }
         } else {
           this.ctx.clearRect(0, 0, width, height);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Icon, Label } from 'semantic-ui-react'
+import { Button, Icon, Label, Form, Radio } from 'semantic-ui-react'
 
 
 import MainMenu from './components/menu';
@@ -25,7 +25,8 @@ class App extends Component {
       lockFreq: false,
       lockAmp: false,
       showCombinedWaveInfo: false,
-      combinedFrequency: 0
+      combinedFrequency: 0,
+      timbreSelection: "square"
     }
   }
 
@@ -87,6 +88,8 @@ class App extends Component {
       this.setState({showCombinedWaveInfo: false})
     }
   }
+
+  handleTimbreChange = (e, timbre) => this.setState({timbreSelection: timbre.value});
 
   restart = () =>{
     this.setState({started: false});
@@ -156,13 +159,45 @@ class App extends Component {
               onClick={this.handleTimbrePure}>
               Pure
               </Button>
-              <Button
-              className="timbre-button"
-              color={complexColor}
-              onClick={this.handleTimbreComplex}>
-              Complex
-              </Button>
-
+              <div className="complex-button-container">
+                <Button
+                className="timbre-button"
+                color={complexColor}
+                onClick={this.handleTimbreComplex}>
+                Complex
+                </Button>
+                {this.state.timbre &&
+                  <React.Fragment>
+                    <Form.Field className="timbre-choice-dropdown square-button">
+                     <Radio
+                       label='Square'
+                       name='radioGroup'
+                       value='square'
+                       checked={this.state.timbreSelection === 'square'}
+                       onChange={this.handleTimbreChange}
+                     />
+                   </Form.Field>
+                   <Form.Field className="timbre-choice-dropdown saw-button">
+                     <Radio
+                       label='Saw'
+                       name='radioGroup'
+                       value='saw'
+                       checked={this.state.timbreSelection === 'saw'}
+                       onChange={this.handleTimbreChange}
+                     />
+                   </Form.Field>
+                   <Form.Field className="timbre-choice-dropdown triangle-button">
+                     <Radio
+                       label='Triangle'
+                       name='radioGroup'
+                       value='triangle'
+                       checked={this.state.timbreSelection === 'triangle'}
+                       onChange={this.handleTimbreChange}
+                     />
+                   </Form.Field>
+                 </React.Fragment>
+               }
+              </div>
               <Button
               icon
               className="lock-freq-button"

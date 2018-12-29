@@ -44,6 +44,33 @@ canvas {
 
 }
 
+.complex-button-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 15;
+}
+
+.timbre-choice-dropdown {
+  position: absolute;
+  width: 100%;
+  left: 0%;
+  height: 100%;
+  padding: 2%;
+  background-color: white;
+}
+
+.square-button {
+  top: -100%;
+}
+
+.saw-button {
+  top: -200%;
+}
+
+.triangle-button {
+  top: -300%;
+}
 
 .sustain-button {
   z-index: 10;
@@ -63,6 +90,7 @@ canvas {
 
   width: 7em;
 }
+
 
 
 

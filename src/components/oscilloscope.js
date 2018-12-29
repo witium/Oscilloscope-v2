@@ -175,6 +175,7 @@ export default class Oscilloscope extends Component {
       this.ctx.stroke();
 
       // Find min freq and Draw axes
+      console.table(signals);
       this.props.drawCombinedInfo(signals.reduce((total, signal)=>{
         return (signal.freq < total) ? signal.freq: total;
       }, Infinity));

@@ -550,6 +550,7 @@ export default class ControlBar extends Component {
           this.ctx.clearRect(0, 0, width, height);
           this.renderCanvas();
           this.label(freq, pos.x, pos.y,0 );
+          audioEvent.push({freq: freq, volume: gain, color: 0});          
           for(let i = 0; i<NUM_VOICES - 1; i++){
             let index = (i+1)%NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;

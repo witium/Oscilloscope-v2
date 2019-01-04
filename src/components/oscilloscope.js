@@ -39,7 +39,7 @@ export default class Oscilloscope extends Component {
     // let t = 0;
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;
-
+    // console.table(signals)
     // // NEW CHANGE: ONLY SUM COLOR
     // for (let signal of signals){
     //
@@ -140,12 +140,27 @@ export default class Oscilloscope extends Component {
             let v = wavelength / signal.freq;
             let k = 2 * Math.PI / wavelength;
             let volume = dbToLinear(signal.volume);
+            let f;
+            switch (signal.wavetype) {
+              case "sine":
+                f = x => Math.cos(k * (x + v * t));
+                break;
+              case "square":
+                f = x => (Math.cos(k * (x + v * t)) > 0) ? 1 : -1;
+                break;
+              case "sawtooth":
+                f = x => 2 * (x / wavelength - Math.floor(0.5 +  x / wavelength));
+                break;
+              case "triangle":
+                f = x => 4 / wavelength*(Math.abs(x % wavelength - wavelength / 2) - wavelength / 4);
+                break;
+              default:
+                f = val => Infinity;
+            }
             if(isNaN(volume)){
               volume = 0;
             }
-            y += (volume * 350 * Math.cos(k * (x + v * t)));
-
-
+            y += (volume * 350 * f(x));
         }
         //let y = 0;
         // Calculate the location of the point using the equation of the wave.
@@ -164,6 +179,7 @@ export default class Oscilloscope extends Component {
         if (i === 0) {
           this.ctx.moveTo(x, y);
         } else {
+          // if(i == 4022) console.log(y)
           this.ctx.lineTo(x, y);
 
           // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;

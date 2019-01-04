@@ -51,20 +51,20 @@ class App extends Component {
   handleTimbrePure = () =>{
     this.setState({timbre: false, timbreType: 'Pure'});
     if(this.state.sustain){
-      this.controlbar.current.sustainChangeTimbre(false);
+      this.controlbar.current.sustainChangeTimbre(false, "sine");
     }
   }
   handleTimbreComplex = () =>{
       this.setState({timbre: true, timbreType: 'Complex'});
       if(this.state.sustain){
-        this.controlbar.current.sustainChangeTimbre(true);
+        this.controlbar.current.sustainChangeTimbre(true, this.state.timbreSelection);
     } else {
-      this.controlbar.current.generateComplexWeights();
+      this.controlbar.current.generateComplexWeights(this.state.timbreSelection);
     }
 
   }
 
-  handlesustainToggle = () => {
+  handleSustainToggle = () => {
     if(this.state.sustain){
       this.controlbar.current.releaseAll(false);
     }
@@ -89,7 +89,14 @@ class App extends Component {
     }
   }
 
-  handleTimbreChange = (e, timbre) => this.setState({timbreSelection: timbre.value});
+  handleTimbreChange = (e, timbre) => {
+    if(this.state.sustain){
+      this.controlbar.current.sustainChangeTimbre(true, timbre.value);
+  } else {
+    this.controlbar.current.generateComplexWeights(timbre.value);
+  }
+    this.setState({timbreSelection: timbre.value});
+  }
 
   restart = () =>{
     this.setState({started: false});
@@ -131,6 +138,7 @@ class App extends Component {
             onAudioEvent={this.onAudioEvent}
             sustain={this.state.sustain}
             timbreType={this.state.timbreType}
+            timbreSelection={this.state.timbreSelection}
             lockFreq={this.state.lockFreq}
             lockAmp={this.state.lockAmp}
             ref={this.controlbar}/>
@@ -181,8 +189,8 @@ class App extends Component {
                      <Radio
                        label='Saw'
                        name='radioGroup'
-                       value='saw'
-                       checked={this.state.timbreSelection === 'saw'}
+                       value='sawtooth'
+                       checked={this.state.timbreSelection === 'sawtooth'}
                        onChange={this.handleTimbreChange}
                      />
                    </Form.Field>
@@ -220,7 +228,7 @@ class App extends Component {
               className="sustain-button"
               toggle
               active={this.state.sustain}
-              onClick={this.handlesustainToggle}>
+              onClick={this.handleSustainToggle}>
               Sustain
               </Button>
             </Button.Group>

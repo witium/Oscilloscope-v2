@@ -42,13 +42,20 @@ function getFreq(index, min, max) {
 function getGain(index) {
   //1 t0 0 ->
   //-30 to 0dB
-  index = index - 0.1;
+  // index = index - 0.1;
   return -1 * (index * 30);
+}
+
+function getHarmonicGain(index) {
+  if (index == 0){
+    index = 0.001;
+  }
+  return 20*Math.log10(index);
 }
 
 function getLinearGain(gain){
   gain = -1 * gain / 30;
-  return gain + 0.1;
+  return gain;
 }
 
 

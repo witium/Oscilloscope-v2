@@ -25,6 +25,7 @@ export default class ControlBar extends Component {
 
     this.state = {
       mouseDown: false,
+      mouseSustain: false,
       touch: false,
       feedback: false,
       amOn: false,
@@ -163,24 +164,17 @@ export default class ControlBar extends Component {
     if(this.props.lockAmp){
       this.prevGain[0] = gain;
     }
-    if(this.props.timbreType === "Complex"){
-      for(let i = 0; i<NUM_VOICES - 1; i++){
-        let index = (i+1)%NUM_VOICES;
-        let complexFrequency = freqs[0]*this.complexHarmonics[i];
-        if(complexFrequency < 20000){
-          this.synths[index].triggerAttack(complexFrequency);
-          this.synths[index].volume.value = this.complexVols[i]*xPercent;
-        }
-      }
-    }
     this.ctx.clearRect(0, 0, this.props.width, this.props.height); // Clears canvas for redraw of label
     this.renderCanvas();
     this.label(freqs[0], pos.x, pos.y, 0); // Labels the point
     this.setState({mouseDown: true});
-    if(this.props.noteLinesOn){
-      // this.renderNoteLines();
+    let wavetype;
+    if(this.props.timbreType === "Complex"){
+        wavetype = this.props.timbreSelection;
+    } else {
+        wavetype = "sine";
     }
-    this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0}]);
+    this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0, wavetype: wavetype}]);
 
   }
 
@@ -225,18 +219,6 @@ export default class ControlBar extends Component {
 
         }
 
-        if(this.props.timbreType === "Complex"){
-          for(let i = 0; i<NUM_VOICES - 1; i++){
-            let index = (i+1)%NUM_VOICES;
-            let complexFrequency = freqs[0]*this.complexHarmonics[i];
-            if(complexFrequency < 20000){
-              this.synths[index].frequency.exponentialRampToValueAtTime(complexFrequency,
-                this.props.context.currentTime+RAMPVALUE);
-              this.synths[index].volume.exponentialRampToValueAtTime(this.complexVols[i]*xPercent,
-                  this.props.context.currentTime+RAMPVALUE);
-            }
-          }
-        }
       }
 
       // Clears the label
@@ -246,7 +228,13 @@ export default class ControlBar extends Component {
       if(this.props.noteLinesOn){
         // this.renderNoteLines();
       }
-      this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0}]);
+      let wavetype;
+      if(this.props.timbreType === "Complex"){
+          wavetype = this.props.timbreSelection;
+      } else {
+          wavetype = "sine";
+      }
+      this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0, wavetype}]);
 
     }
 
@@ -258,22 +246,14 @@ export default class ControlBar extends Component {
     // Only need to trigger release if synth exists (a.k.a mouse is down)
     if (this.state.mouseDown && !this.props.sustain) {
       this.synths[0].triggerRelease(); // Relase frequency, volume goes to -Infinity
-      if(this.props.timbreType === "Complex"){
-        this.releaseAll(true);
-      }
-      this.amSignals[0].triggerRelease();
-      this.fmSignals[0].triggerRelease();
-      this.goldIndices = [];
 
       // Clears the label
       this.ctx.clearRect(0, 0, this.props.width, this.props.height);
       this.renderCanvas();
-      if(this.props.noteLinesOn){
-        // this.renderNoteLines();
-      }
       this.props.onAudioEvent([{}]);
+      this.setState({mouseSustain: false})
     }
-    this.setState({mouseDown: false });
+    this.setState({mouseDown: false, mouseSustain: true });
 
 
   }
@@ -927,7 +907,7 @@ sustainChangeTimbre(timbre, timbreSelection){
     this.synths[0].oscillator.type = timbreSelection;
     this.synths[0].volume.value = gain;
 
-    if(this.state.touch){
+    if(this.state.touch || this.state.mouseSustain){
       this.label(freq, xPos, yPos, 0);
       this.synths[0].triggerAttack(freq);
       this.props.onAudioEvent(audioEvent);

@@ -54,7 +54,6 @@ export default class ControlBar extends Component {
     this.prevGain = new Array(NUM_VOICES);
 
 
-    // Start master volume at -20 dB
     this.masterVolume = new Tone.Volume(0);
     this.ctx = this.canvas.getContext('2d');
     let options = {
@@ -101,9 +100,17 @@ export default class ControlBar extends Component {
 
 
     }
+      this.masterVolume.connect(Tone.Master);
+      this.reverb = new Tone.Reverb(4); // Reverb unit. Runs in parallel to masterVolume
+      this.reverbVolume = new Tone.Volume(0);
+      this.reverbVolume.connect(Tone.Master);
+      this.masterVolume.connect(this.reverb);
+      this.reverb.generate().then(()=>{
+        this.reverb.connect(this.reverbVolume);
+      });
 
     this.goldIndices = []; // Array to hold indices on the screen of gold note lines (touched/clicked lines)
-    this.masterVolume.connect(Tone.Master); // Master volume receives all of the synthesizer inputs and sends them to the speakers
+    //this.masterVolume.connect(Tone.Master); // Master volume receives all of the synthesizer inputs and sends them to the speakers
 
     // this.reverb = new Tone.Reverb(this.props.reverbDecay*10+0.1); // Reverb unit. Runs in parallel to masterVolume
     // this.reverbVolume = new Tone.Volume(0);
@@ -378,7 +385,6 @@ export default class ControlBar extends Component {
   onTouchMove(e){
     e.preventDefault(); // Always need to prevent default browser choices
     // e.stopPropagation();
-    // console.log("MOVE");
 
     // Check if more fingers were moved than allowed
     if(e.changedTouches.length > NUM_VOICES ){
@@ -750,9 +756,11 @@ export default class ControlBar extends Component {
 
         let freqY = (1 - percent) * rect.height;
         let volX = (1 - percent) * rect.width;
-
+        if (i === ticks){
+          freqY += 3;
+        }
         this.ctx.beginPath();
-        this.ctx.font = '16px Verdana ';
+        this.ctx.font = '1.25em Verdana';
         this.ctx.textAlign = 'right';
         this.ctx.fillStyle = 'black';
 
@@ -770,7 +778,7 @@ export default class ControlBar extends Component {
 label(freq, x, y, index) {
   let xOffset = 70;
   let yOffset = 20;
-  this.ctx.font = '20px Inconsolata';
+  this.ctx.font = '1.25em Verdana';
   this.ctx.fillStyle = 'white';
   // 90%
   const switchLabelSide = (this.props.width)*0.9;

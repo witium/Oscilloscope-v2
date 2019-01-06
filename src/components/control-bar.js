@@ -845,24 +845,12 @@ releaseAll(complex){
 
 generateComplexWeights(timbre){
   let weightFunction;
-  console.log(timbre)
-  // Setup square, saw, and triangle weight functions
-  switch (timbre) {
-    case "square":
-      this.synths[0].oscillator.type = "square";
-      // weightFunction = x => (x % 2 == 0) ? 1/x : 0;
-      break;
-    case "saw":
-      this.synths[0].oscillator.type = "saw";
-      // weightFunction = x => 1/x;
-      break;
-    case "triangle":
-      this.synths[0].oscillator.type = "triangle";
-      // weightFunction = x => (x % 2 == 0) ? ((x % 4 == 0) ? 1/(x * x) : -1/(x * x)) : 0;
-      break;
+  this.synths[0].triggerRelease();
+  this.synths[0] = new Tone.Synth();
+  this.synths[0].connect(this.masterVolume);
+  this.synths[0].oscillator.type = timbre;
 
 
-  }
   // for(let i = 0; i < NUM_VOICES; i++){
   //   let vol;
   //   if (i == 0){

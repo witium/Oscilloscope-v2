@@ -40,6 +40,7 @@ export default class Oscilloscope extends Component {
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;
     // console.table(signals)
+    
     // // NEW CHANGE: ONLY SUM COLOR
     // for (let signal of signals){
     //
@@ -154,6 +155,19 @@ export default class Oscilloscope extends Component {
               case "triangle":
                 f = x => 4 / wavelength*(Math.abs(x % wavelength - wavelength / 2) - wavelength / 4);
                 break;
+              case "":
+                f = x => {
+                  let answer = 0;
+                  for(let i = 0; i < signal.partials.length; i++){
+
+                    let wavelength = 100 * this.props.height / signal.freq*(i+1);
+                    let v = wavelength / signal.freq;
+                    let k = 2 * Math.PI / wavelength;
+                    answer += signal.partials[i]*Math.cos(k * (x + v * t));
+                  }
+                  return answer;
+                }
+              break;
               default:
                 f = val => Infinity;
             }

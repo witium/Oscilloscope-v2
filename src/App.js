@@ -26,7 +26,7 @@ class App extends Component {
       lockAmp: false,
       showCombinedWaveInfo: false,
       combinedFrequency: 0,
-      timbreSelection: "square"
+      timbreSelection: ""
     }
   }
 
@@ -49,17 +49,17 @@ class App extends Component {
 
 
   handleTimbrePure = () =>{
-    this.setState({timbre: false, timbreType: 'Pure'});
+    this.setState({timbre: false, timbreType: 'Pure', timbreSelection: ""});
     if(this.state.sustain){
       this.controlbar.current.sustainChangeTimbre(false, "sine");
     }
   }
   handleTimbreComplex = () =>{
-      this.setState({timbre: true, timbreType: 'Complex'});
+      this.setState({timbre: true, timbreType: 'Complex', timbreSelection: ""});
       if(this.state.sustain){
-        this.controlbar.current.sustainChangeTimbre(true, this.state.timbreSelection);
+        this.controlbar.current.sustainChangeTimbre(true, "complex");
     } else {
-      this.controlbar.current.generateComplexWeights(this.state.timbreSelection);
+      this.controlbar.current.generateComplexWeights("complex");
     }
 
   }
@@ -161,6 +161,8 @@ class App extends Component {
               </Label>
             }
             <Button.Group className="button-group-container">
+            <div className="waveform-button-container">
+              <Button className="waveform-button-title">Waveform</Button>
               <Button
               className="timbre-button"
               color={pureColor}
@@ -205,7 +207,9 @@ class App extends Component {
                    </Form.Field>
                  </React.Fragment>
                }
+               </div>
               </div>
+
               <Button
               icon
               className="lock-freq-button"

@@ -8,6 +8,7 @@ import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, 
 const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
 const CHROMATIC = 3;
+const NUM_PARTIALS = 5;
 
 const resolutionMax = 20000;
 const resolutionMin = 20;
@@ -181,7 +182,15 @@ export default class ControlBar extends Component {
     } else {
         wavetype = "sine";
     }
-    this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0, wavetype: wavetype}]);
+    this.props.onAudioEvent([
+      {
+        freq: freqs[0],
+        volume: gain,
+        color: 0,
+        wavetype: wavetype,
+        partials: this.partials
+      }
+    ]);
 
   }
 
@@ -241,7 +250,15 @@ export default class ControlBar extends Component {
       } else {
           wavetype = "sine";
       }
-      this.props.onAudioEvent([{freq: freqs[0], volume: gain, color: 0, wavetype}]);
+      this.props.onAudioEvent([
+        {
+          freq: freqs[0],
+          volume: gain,
+          color: 0,
+          wavetype: wavetype,
+          partials: this.partials
+        }
+      ]);
 
     }
 
@@ -373,7 +390,13 @@ export default class ControlBar extends Component {
         //this.ctx.clearRect(0, 0, this.props.width, this.props.height);
         //this.renderCanvas();
         this.label(freq, pos.x, pos.y, newVoice );
-        audioEvent.push({freq: freq, volume: gain, color: newVoice, wavetype: this.props.timbreSelection})
+        audioEvent.push({
+          freq: freq,
+          volume: gain,
+          color: newVoice,
+          wavetype: this.props.timbreSelection,
+          partials: this.partials
+        })
       } else {
         return;
       }
@@ -521,7 +544,13 @@ export default class ControlBar extends Component {
           this.ctx.clearRect(0, 0, width, height);
           this.renderCanvas();
           this.label(freq, pos.x, pos.y,0 );
-          audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: this.props.timbreSelection});
+          audioEvent.push({
+            freq: freq,
+            volume: gain,
+            color: 0,
+            wavetype: this.props.timbreSelection,
+            partials: this.partials
+          });
       }
 
       this.props.onAudioEvent(audioEvent);
@@ -604,7 +633,7 @@ export default class ControlBar extends Component {
             gain = this.prevGain[index];
           }
           this.label(freq, pos.x, pos.y, index );
-          audioEvent.push({freq: freq, volume: gain, color: index});
+          audioEvent.push({freq: freq, volume: gain, color: index, wavetype: "sine"});
 
         }
         if(e.touches.length === 0){
@@ -848,35 +877,16 @@ generateComplexWeights(timbre){
   this.synths[0].triggerRelease();
   this.synths[0] = new Tone.Synth();
   this.synths[0].connect(this.masterVolume);
-  this.synths[0].oscillator.type = timbre;
+  if(timbre === "complex"){
+    let partials = [];
+    for(let i = 0; i < NUM_PARTIALS; i++){
+      partials.push(Math.random());
+    }
+    this.synths[0].oscillator.partials = partials;
+  } else  {
+    this.synths[0].oscillator.type = timbre;
+  }
 
-
-  // for(let i = 0; i < NUM_VOICES; i++){
-  //   let vol;
-  //   if (i == 0){
-  //     vol = getGain(1);
-  //   }
-  //   else {
-  //     console.log(i+1, weightFunction(i+1))
-  //     vol = getGain(1 - weightFunction(i+1))
-  //   }
-  //   this.complexVols[i] = vol;
-  //   this.complexHarmonics[i] = i + 2;
-  //   // console.log(this.complexHarmonics[i], this.complexVols[i])
-  // }
-  // for(let i = 0; i < NUM_VOICES; i++){
-
-    // let vol = getGain(Math.random())- 10;
-    // let harmonic = Math.round(Math.random()*10)+2;
-    // let breakCheck = 100;
-    // while(this.complexHarmonics.indexOf(harmonic) !== -1){
-    //   harmonic = Math.round(Math.random()*8)+2;
-    //   breakCheck--;
-    //   if(breakCheck===0) break;
-    // }
-    // this.complexVols[i] = vol;
-    // this.complexHarmonics[i] = harmonic;
-  // }
 }
 
 sustainChangeTimbre(timbre, timbreSelection){
@@ -896,11 +906,30 @@ sustainChangeTimbre(timbre, timbreSelection){
     }
     this.ctx.clearRect(0, 0, this.props.width, this.props.height);
     this.renderCanvas();
-    audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: timbreSelection});
     this.synths[0].triggerRelease();
     this.synths[0] = new Tone.Synth();
     this.synths[0].connect(this.masterVolume);
-    this.synths[0].oscillator.type = timbreSelection;
+    if(timbreSelection === "complex"){
+      let partials = [1];
+      for(let i = 0; i < NUM_PARTIALS; i++){
+        partials.push(Math.random());
+      }
+      this.synths[0].oscillator.partials = partials;
+      let norm = 0;
+      for(let i = 0; i < partials.length; i++){
+        norm += partials[i]^2;
+      }
+      norm = Math.sqrt(norm);
+      for(let i = 0; i < partials.length; i++){
+        partials[i] /= norm;
+      }
+      this.partials = partials;
+      audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: "", partials: partials});
+
+    } else {
+      this.synths[0].oscillator.type = timbreSelection;
+      audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: timbreSelection});
+    }
     this.synths[0].volume.value = gain;
 
     if(this.state.touch || this.state.mouseSustain){

@@ -87,10 +87,50 @@ canvas {
 
 }
 
-.timbre-button {
+.waveform-button-container {
+  display: flex;
+  border: 2px solid #C9CACB;
+  border-top-left-radius: .28571429rem;
+  border-bottom-left-radius: .28571429rem;
+  position: relative;
 
+}
+
+.waveform-button-title {
+  position: absolute;
+  z-index: 20;
+  font-size: 0.75rem!important;
+  cursor: default!important;
+  border-top-right-radius: .28571429rem!important;
+  border-bottom-right-radius: .28571429rem!important;
+  /* height: 1em; */
+  /* width: 5em; */
+  top: -20%;
+  left: 50%;
+  /* background-color: white; */
+  /* color: white; */
+  transform: translateX(-50%);
+  padding: 2px!important;
+  color: black!important;
+
+}
+.waveform-button-title:active {
+  background-color: #E0E1E2!important;
+}
+
+.waveform-button-title:hover {
+  color: black!important;
+  background-color: #E0E1E2!important;
+
+}
+
+
+.timbre-button {
+  border-radius: 0px!important;
   width: 7em;
 }
+
+
 
 
 

@@ -40,7 +40,7 @@ export default class Oscilloscope extends Component {
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;
     // console.table(signals)
-    
+
     // // NEW CHANGE: ONLY SUM COLOR
     // for (let signal of signals){
     //

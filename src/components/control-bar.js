@@ -370,6 +370,8 @@ export default class ControlBar extends Component {
     } else {
       // COMPLEX
       if(e.touches.length==1){
+        this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+        this.renderCanvas();
         let pos = getMousePos(this.canvas, e.changedTouches[0]);
         let yPercent = 1 - pos.y / this.props.height;
         let xPercent = 1 - pos.x / this.props.width;
@@ -883,6 +885,15 @@ generateComplexWeights(timbre){
       partials.push(Math.random());
     }
     this.synths[0].oscillator.partials = partials;
+    let norm = 0;
+    for(let i = 0; i < partials.length; i++){
+      norm += partials[i]^2;
+    }
+    norm = Math.sqrt(norm);
+    for(let i = 0; i < partials.length; i++){
+      partials[i] /= norm;
+    }
+    this.partials = partials;
   } else  {
     this.synths[0].oscillator.type = timbre;
   }

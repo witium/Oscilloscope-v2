@@ -177,7 +177,7 @@ export default class ControlBar extends Component {
     this.label(freqs[0], pos.x, pos.y, 0); // Labels the point
     this.setState({mouseDown: true});
     let wavetype;
-    if(this.props.timbreType === "Complex"){
+    if(this.props.timbreType === "complex"){
         wavetype = this.props.timbreSelection;
     } else {
         wavetype = "sine";
@@ -245,7 +245,7 @@ export default class ControlBar extends Component {
         // this.renderNoteLines();
       }
       let wavetype;
-      if(this.props.timbreType === "Complex"){
+      if(this.props.timbreType === "complex"){
           wavetype = this.props.timbreSelection;
       } else {
           wavetype = "sine";
@@ -290,7 +290,7 @@ export default class ControlBar extends Component {
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
       this.goldIndices = [];
-      if(this.props.timbreType === "Complex"){
+      if(this.props.timbreType === "complex"){
         this.releaseAll(true);
       }
       // Clears the label
@@ -320,7 +320,7 @@ export default class ControlBar extends Component {
       return;
     }
     // For each finger, do the same as above in onMouseDown
-    if(this.props.timbreType === "Pure"){
+    if(this.props.timbreType === "pure"){
       this.synths[0].oscillator.type = "sine";
       for (let i = 0; i < e.changedTouches.length; i++) {
         let pos = getMousePos(this.canvas, e.changedTouches[i]);
@@ -424,7 +424,7 @@ export default class ControlBar extends Component {
       let audioEvent = [];
 
       // For each changed touch, do the same as onMouseMove
-      if(this.props.timbreType === "Pure"){
+      if(this.props.timbreType === "pure"){
         for (let i = 0; i < e.changedTouches.length; i++) {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
           if(pos.x > this.props.width){
@@ -572,7 +572,7 @@ export default class ControlBar extends Component {
         return;
       }
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
-        if(this.props.timbreType === "Complex"){
+        if(this.props.timbreType === "complex"){
           if(!this.props.sustain){
               this.synths[0].triggerRelease();
               this.releaseAll(true);

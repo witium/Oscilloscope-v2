@@ -20,7 +20,7 @@ class App extends Component {
       height: window.innerHeight,
       started: false,
       timbre: false,
-      timbreType: 'Pure',
+      timbreType: 'pure',
       sustain: false,
       lockFreq: false,
       lockAmp: false,
@@ -49,13 +49,15 @@ class App extends Component {
 
 
   handleTimbrePure = () =>{
-    this.setState({timbre: false, timbreType: 'Pure', timbreSelection: ""});
+    this.setState({timbre: false, timbreType: 'pure', timbreSelection: ""});
     if(this.state.sustain){
       this.controlbar.current.sustainChangeTimbre(false, "sine");
+    } else {
+      this.controlbar.current.generateComplexWeights("sine");
     }
   }
   handleTimbreComplex = () =>{
-      this.setState({timbre: true, timbreType: 'Complex', timbreSelection: ""});
+      this.setState({timbre: true, timbreType: 'complex', timbreSelection: ""});
       if(this.state.sustain){
         this.controlbar.current.sustainChangeTimbre(true, "complex");
     } else {

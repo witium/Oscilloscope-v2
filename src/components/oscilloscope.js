@@ -160,8 +160,8 @@ export default class Oscilloscope extends Component {
                   let answer = 0;
                   for(let i = 0; i < signal.partials.length; i++){
 
-                    let wavelength = 100 * this.props.height / signal.freq*(i+1);
-                    let v = wavelength / signal.freq;
+                    let wavelength = 100 * this.props.height / (signal.freq*(i+1));
+                    let v = wavelength / (signal.freq*(i+1));
                     let k = 2 * Math.PI / wavelength;
                     answer += signal.partials[i]*Math.cos(k * (x + v * t));
                   }

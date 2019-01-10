@@ -885,7 +885,14 @@ generateComplexWeights(timbre){
       partials.push(Math.random());
     }
     this.synths[0].oscillator.partials = partials;
-
+    // let norm = 0;
+    // for(let i = 0; i < partials.length; i++){
+    //   norm += partials[i]^2;
+    // }
+    // norm = Math.sqrt(norm);
+    // for(let i = 0; i < partials.length; i++){
+    //   partials[i] /= norm;
+    // }
     this.partials = partials;
   } else  {
     this.synths[0].oscillator.type = timbre;
@@ -919,7 +926,14 @@ sustainChangeTimbre(timbre, timbreSelection){
         partials.push(Math.random());
       }
       this.synths[0].oscillator.partials = partials;
-    
+      // let norm = 0;
+      // for(let i = 0; i < partials.length; i++){
+      //   norm += partials[i]^2;
+      // }
+      // norm = Math.sqrt(norm);
+      // for(let i = 0; i < partials.length; i++){
+      //   partials[i] /= norm;
+      // }
       this.partials = partials;
       audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: "", partials: partials});
 

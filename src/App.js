@@ -110,11 +110,11 @@ class App extends Component {
       // let backgroundColor = "yellow";
       let pureColor, complexColor, freqIcon, ampIcon;
       if(this.state.timbre){
-        pureColor = "red";
-        complexColor = "teal";
+        pureColor = "#E0E1E2";
+        complexColor = "red";
       } else {
         pureColor = "teal";
-        complexColor = "red";
+        complexColor = "#E0E1E2";
       }
       if(this.state.lockFreq){
         freqIcon = "lock"
@@ -163,17 +163,43 @@ class App extends Component {
               </Label>
             }
             <Button.Group className="button-group-container">
+              <Button
+              icon
+              className="lock-freq-button"
+              toggle
+              active={this.state.lockFreq}
+              onClick={this.handlelockFreqToggle}>
+              <Icon name={freqIcon}/>
+              Frequency
+              </Button>
+              <Button
+              icon
+              className="lock-amp-button"
+              toggle
+              active={this.state.lockAmp}
+              onClick={this.handlelockAmpToggle}>
+              <Icon name={ampIcon}/>
+              Amplitude
+              </Button>
+              <Button
+              className="sustain-button"
+              toggle
+              active={this.state.sustain}
+              onClick={this.handleSustainToggle}>
+              Sustain
+              </Button>
+            </Button.Group>
             <div className="waveform-button-container">
               <Button className="waveform-button-title">Waveform</Button>
               <Button
-              className="timbre-button"
+              className="timbre-button timbre-pure"
               color={pureColor}
               onClick={this.handleTimbrePure}>
               Pure
               </Button>
               <div className="complex-button-container">
                 <Button
-                className="timbre-button"
+                className="timbre-button timbre-complex"
                 color={complexColor}
                 onClick={this.handleTimbreComplex}>
                 Complex
@@ -211,33 +237,6 @@ class App extends Component {
                }
                </div>
               </div>
-
-              <Button
-              icon
-              className="lock-freq-button"
-              toggle
-              active={this.state.lockFreq}
-              onClick={this.handlelockFreqToggle}>
-              <Icon name={freqIcon}/>
-              Frequency
-              </Button>
-              <Button
-              icon
-              className="lock-amp-button"
-              toggle
-              active={this.state.lockAmp}
-              onClick={this.handlelockAmpToggle}>
-              <Icon name={ampIcon}/>
-              Amplitude
-              </Button>
-              <Button
-              className="sustain-button"
-              toggle
-              active={this.state.sustain}
-              onClick={this.handleSustainToggle}>
-              Sustain
-              </Button>
-            </Button.Group>
           </React.Fragment>:
           <p className="flashing">Click or tap anywhere on the canvas to start the signal generator</p>
         }

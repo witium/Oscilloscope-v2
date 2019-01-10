@@ -31,7 +31,7 @@ canvas {
   z-index: 10;
   position: absolute;
   bottom: 0%;
-  right: 0%;
+  left: 25%;
 
 }
 
@@ -79,11 +79,11 @@ canvas {
 }
 
 .waveform-button-container {
+  position: absolute;
+  bottom:0%;
+  right: 0%;
+  z-index: 15;
   display: flex;
-  border: 2px solid #C9CACB;
-  border-top-left-radius: .28571429rem;
-  border-bottom-left-radius: .28571429rem;
-  position: relative;
 
 }
 
@@ -118,17 +118,25 @@ canvas {
 
 .timbre-button {
   border-radius: 0px!important;
+
   width: 7em;
+  margin-right: 0px!important;
 }
-
-
-
-
-
 
 .timbre-button:active {
   background-color: "red"!important;
 }
+
+.timbre-pure {
+  border-top-left-radius: .28571429rem!important;
+  border-bottom-left-radius: .28571429rem!important;
+}
+
+.timbre-complex {
+  border-top-right-radius: .28571429rem!important;
+  border-bottom-right-radius: .28571429rem!important;
+}
+
 .combined-wave-title {
   font-size: 1.5em;
   margin-bottom: 0.25em;

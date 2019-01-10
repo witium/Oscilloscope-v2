@@ -318,7 +318,7 @@ export default class Oscilloscope extends Component {
 
     ctx.fillStyle = "white";
     ctx.font = "1.25em Verdana";
-    ctx.fillText("Time", canvasWidth*0.94, canvasHeight*0.6);
+    ctx.fillText("Time", canvasWidth*0.04, canvasHeight*0.58);
     ctx.fillText("Air Pressure", canvasWidth*0.52, canvasHeight*0.04);
 
     // Draw the scale for the canvas

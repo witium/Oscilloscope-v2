@@ -12,15 +12,6 @@ body {
 
 }
 
-@media only screen and (max-width: 850px) {
-  .combined-wave-info {
-    border-top: 2px solid white!important;
-    top: 11%;
-    bottom: 82%!important;
-    width: 20%!important;
-  }
-}
-
 .flex-container {
   /* display: flex; */
   /* flex-direction: row; */
@@ -144,12 +135,14 @@ canvas {
 
 }
 .combined-wave-info {
+  border-top: 2px solid white;
+  top: 11%;
+  height: 5rem;
+  width: 20%;
   position: absolute;
   z-index: 11;
   border: 2px solid red;
-  bottom: 0%;
   left: 25%;
-  width: 12%;
   user-select: none;
 }
 

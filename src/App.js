@@ -110,11 +110,11 @@ class App extends Component {
       // let backgroundColor = "yellow";
       let pureColor, complexColor, freqIcon, ampIcon;
       if(this.state.timbre){
-        pureColor = "#E0E1E2";
+        pureColor = "";
         complexColor = "red";
       } else {
         pureColor = "teal";
-        complexColor = "#E0E1E2";
+        complexColor = "";
       }
       if(this.state.lockFreq){
         freqIcon = "lock"

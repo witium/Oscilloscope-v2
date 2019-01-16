@@ -184,7 +184,7 @@ export default class ControlBar extends Component {
     }
     this.props.onAudioEvent([
       {
-        freq: freqs[0],
+        freq: 1000,//freqs[0],
         volume: gain,
         color: 0,
         wavetype: wavetype,

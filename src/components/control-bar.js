@@ -776,33 +776,33 @@ export default class ControlBar extends Component {
 
       let dashSize = { x: 24, y: 7 };
 
-      for (let i = 0; i <= ticks; i++) {
-        let freq = ((i) / (ticks))
-        let tickFreq = Math.round(logspace(MINFREQ, MAXFREQ, freq, 2));
-
-        let vol = ((freq / ticks - 1) * -1);
-        let tickVol = Math.round(logspace(0.001, 0.5, vol, 2) * 100) / 10 * 2;
-
-        let percent = i / (ticks);
-
-        let freqY = (1 - percent) * rect.height;
-        let volX = (1 - percent) * rect.width;
-        if (i === ticks){
-          freqY += 3;
-        }
-        this.ctx.beginPath();
-        this.ctx.font = '1.25em Verdana';
-        this.ctx.textAlign = 'right';
-        this.ctx.fillStyle = 'black';
-
-        // Draw in the frequency y axis
-        this.ctx.fillText(tickFreq + ' Hz', parseInt(freqX) - 29, parseInt(freqY + 13));
-        this.ctx.fillRect(parseInt(freqX) - 19, parseInt(freqY), dashSize.x, dashSize.y);
-
-        // Draw in the volume x axis
-        this.ctx.fillText(tickVol, parseInt(volX) + 45, parseInt(volY) - 11);
-        this.ctx.fillRect(parseInt(volX) + 8, parseInt(volY) - 22, dashSize.y, dashSize.x);
-    }
+    //   for (let i = 0; i <= ticks; i++) {
+    //     let freq = ((i) / (ticks))
+    //     let tickFreq = Math.round(logspace(MINFREQ, MAXFREQ, freq, 2));
+    //
+    //     let vol = ((freq / ticks - 1) * -1);
+    //     let tickVol = Math.round(logspace(0.001, 0.5, vol, 2) * 100) / 10 * 2;
+    //
+    //     let percent = i / (ticks);
+    //
+    //     let freqY = (1 - percent) * rect.height;
+    //     let volX = (1 - percent) * rect.width;
+    //     if (i === ticks){
+    //       freqY += 3;
+    //     }
+    //     this.ctx.beginPath();
+    //     this.ctx.font = '1.25em Verdana';
+    //     this.ctx.textAlign = 'right';
+    //     this.ctx.fillStyle = 'black';
+    //
+    //     // Draw in the frequency y axis
+    //     this.ctx.fillText(tickFreq + ' Hz', parseInt(freqX) - 29, parseInt(freqY + 13));
+    //     this.ctx.fillRect(parseInt(freqX) - 19, parseInt(freqY), dashSize.x, dashSize.y);
+    //
+    //     // Draw in the volume x axis
+    //     this.ctx.fillText(tickVol, parseInt(volX) + 45, parseInt(volY) - 11);
+    //     this.ctx.fillRect(parseInt(volX) + 8, parseInt(volY) - 22, dashSize.y, dashSize.x);
+    // }
   }
 
   // Helper method that generates a label for the frequency or the scale note

@@ -162,7 +162,7 @@ class App extends Component {
                 </div>
               </Label>
             }
-            <Button.Group className="button-group-container">
+            {/*<Button.Group className="button-group-container">*/}
               <Button
               icon
               className="lock-freq-button"
@@ -188,7 +188,7 @@ class App extends Component {
               onClick={this.handleSustainToggle}>
               Sustain
               </Button>
-            </Button.Group>
+            {/*</Button.Group>*/}
             <div className="waveform-button-container">
               <Button className="waveform-button-title">Waveform</Button>
               <Button

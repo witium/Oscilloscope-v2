@@ -64,23 +64,49 @@ canvas {
   /* padding: 8% 2%; */
 }
 
-.sustain-button {
-  z-index: 10;
 
-}
 .lock-freq-button {
-
+  z-index: 10;
+  position: absolute;
+  left: 0%;
+  top: 50%;
+  transform: rotate(90deg) translateX(-25%);
+  transform-origin: 10% 50%;
 
 }
 
 .lock-amp-button {
+  z-index: 10;
+  position: absolute;
+  left: 12.5%;
+  bottom: 0%;
+  border: 2px solid black;
+  transform: translateX(-50%);
+}
+
+.lock-freq-button:hover{
+  background-color: #E0E1E2!important;
+}
+
+.lock-amp-button:hover{
+  background-color: #E0E1E2!important;
+}
 
 
+.sustain-button {
+  z-index: 10;
+  position: absolute;
+  left: 25%;
+  bottom: 0%;
+}
+
+.sustain-button:hover {
+    background-color: #E0E1E2!important;
 }
 
 .waveform-button-container {
   position: absolute;
-  bottom:0%;
+  bottom: 0%;
   right: 0%;
   z-index: 15;
   display: flex;

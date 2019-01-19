@@ -155,7 +155,7 @@ export default class Oscilloscope extends Component {
               case "triangle":
                 f = x => 4 / wavelength*(Math.abs(x % wavelength - wavelength / 2) - wavelength / 4);
                 break;
-              case "":
+              case "complex":
                 f = x => {
                   let answer = 0;
                   for(let i = 0; i < signal.partials.length; i++){

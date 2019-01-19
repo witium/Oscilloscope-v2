@@ -63,6 +63,10 @@ canvas {
   top: -300%;
   /* padding: 8% 2%; */
 }
+.random-button {
+  top: -400%;
+  /* padding: 8% 2%; */
+}
 
 
 .lock-freq-button {

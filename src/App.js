@@ -20,13 +20,12 @@ class App extends Component {
       height: window.innerHeight,
       started: false,
       timbre: false,
-      timbreType: 'pure',
       sustain: false,
       lockFreq: false,
       lockAmp: false,
       showCombinedWaveInfo: false,
       combinedFrequency: 0,
-      timbreSelection: ""
+      timbreSelection: "sine"
     }
   }
 
@@ -48,23 +47,23 @@ class App extends Component {
   }
 
 
-  handleTimbrePure = () =>{
-    this.setState({timbre: false, timbreType: 'pure', timbreSelection: ""});
-    if(this.state.sustain){
-      this.controlbar.current.sustainChangeTimbre(false, "sine");
-    } else {
-      this.controlbar.current.generateComplexWeights("sine");
-    }
-  }
-  handleTimbreComplex = () =>{
-      this.setState({timbre: true, timbreType: 'complex', timbreSelection: ""});
-      if(this.state.sustain){
-        this.controlbar.current.sustainChangeTimbre(true, "complex");
-    } else {
-      this.controlbar.current.generateComplexWeights("complex");
-    }
-
-  }
+  // handleTimbrePure = () =>{
+  //   this.setState({timbre: false, timbreType: 'pure', timbreSelection: ""});
+  //   if(this.state.sustain){
+  //     this.controlbar.current.sustainChangeTimbre(false, "sine");
+  //   } else {
+  //     this.controlbar.current.generateComplexWeights("sine");
+  //   }
+  // }
+  // handleTimbreComplex = () =>{
+  //     this.setState({timbre: true, timbreType: 'complex', timbreSelection: ""});
+  //     if(this.state.sustain){
+  //       this.controlbar.current.sustainChangeTimbre(true, "complex");
+  //   } else {
+  //     this.controlbar.current.generateComplexWeights("complex");
+  //   }
+  //
+  // }
 
   handleSustainToggle = () => {
     if(this.state.sustain){
@@ -91,13 +90,13 @@ class App extends Component {
     }
   }
 
-  handleTimbreChange = (e, timbre) => {
+  handleTimbreChange = timbre => {
+    this.setState({timbre: timbre !== "sine", timbreSelection: timbre});
     if(this.state.sustain){
-      this.controlbar.current.sustainChangeTimbre(true, timbre.value);
-  } else {
-    this.controlbar.current.generateComplexWeights(timbre.value);
-  }
-    this.setState({timbreSelection: timbre.value});
+       this.controlbar.current.sustainChangeTimbre(timbre);
+    } else {
+      this.controlbar.current.generateTimbre(timbre);
+    }
   }
 
   restart = () =>{
@@ -139,7 +138,7 @@ class App extends Component {
             context={audioContext}
             onAudioEvent={this.onAudioEvent}
             sustain={this.state.sustain}
-            timbreType={this.state.timbreType}
+            timbre = {this.state.timbre}
             timbreSelection={this.state.timbreSelection}
             lockFreq={this.state.lockFreq}
             lockAmp={this.state.lockAmp}
@@ -194,14 +193,14 @@ class App extends Component {
               <Button
               className="timbre-button timbre-pure"
               color={pureColor}
-              onClick={this.handleTimbrePure}>
+              onClick={(e)=>this.handleTimbreChange("sine")}>
               Pure
               </Button>
               <div className="complex-button-container">
                 <Button
                 className="timbre-button timbre-complex"
                 color={complexColor}
-                onClick={this.handleTimbreComplex}>
+                onClick={(e)=>this.handleTimbreChange("complex")}>
                 Complex
                 </Button>
                 {this.state.timbre &&
@@ -212,7 +211,7 @@ class App extends Component {
                        name='radioGroup'
                        value='square'
                        checked={this.state.timbreSelection === 'square'}
-                       onChange={this.handleTimbreChange}
+                       onChange={(e)=>this.handleTimbreChange("square")}
                      />
                    </Form.Field>
                    <Form.Field className="timbre-choice-dropdown saw-button">
@@ -221,7 +220,7 @@ class App extends Component {
                        name='radioGroup'
                        value='sawtooth'
                        checked={this.state.timbreSelection === 'sawtooth'}
-                       onChange={this.handleTimbreChange}
+                       onChange={(e)=>this.handleTimbreChange("sawtooth")}
                      />
                    </Form.Field>
                    <Form.Field className="timbre-choice-dropdown triangle-button">
@@ -230,7 +229,16 @@ class App extends Component {
                        name='radioGroup'
                        value='triangle'
                        checked={this.state.timbreSelection === 'triangle'}
-                       onChange={this.handleTimbreChange}
+                       onChange={(e)=>this.handleTimbreChange("triangle")}
+                     />
+                   </Form.Field>
+                   <Form.Field className="timbre-choice-dropdown random-button">
+                     <Radio
+                       label='Random'
+                       name='radioGroup'
+                       value='complex'
+                       checked={this.state.timbreSelection === 'complex'}
+                       onChange={(e)=>this.handleTimbreChange("complex")}
                      />
                    </Form.Field>
                  </React.Fragment>

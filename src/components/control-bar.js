@@ -176,18 +176,12 @@ export default class ControlBar extends Component {
     this.renderCanvas();
     this.label(freqs[0], pos.x, pos.y, 0); // Labels the point
     this.setState({mouseDown: true});
-    let wavetype;
-    if(this.props.timbreType === "complex"){
-        wavetype = this.props.timbreSelection;
-    } else {
-        wavetype = "sine";
-    }
     this.props.onAudioEvent([
       {
-        freq: 1000,//freqs[0],
+        freq: freqs[0],
         volume: gain,
         color: 0,
-        wavetype: wavetype,
+        wavetype: this.props.timbreSelection,
         partials: this.partials
       }
     ]);
@@ -244,18 +238,12 @@ export default class ControlBar extends Component {
       if(this.props.noteLinesOn){
         // this.renderNoteLines();
       }
-      let wavetype;
-      if(this.props.timbreType === "complex"){
-          wavetype = this.props.timbreSelection;
-      } else {
-          wavetype = "sine";
-      }
       this.props.onAudioEvent([
         {
           freq: freqs[0],
           volume: gain,
           color: 0,
-          wavetype: wavetype,
+          wavetype: this.props.timbreSelection,
           partials: this.partials
         }
       ]);
@@ -290,7 +278,7 @@ export default class ControlBar extends Component {
       this.amSignals[0].triggerRelease();
       this.fmSignals[0].triggerRelease();
       this.goldIndices = [];
-      if(this.props.timbreType === "complex"){
+      if(this.props.timbre){
         this.releaseAll(true);
       }
       // Clears the label
@@ -307,8 +295,6 @@ export default class ControlBar extends Component {
   }
 
   onTouchStart(e){
-
-    console.log("START");
     e.preventDefault(); // Always need to prevent default browser choices
     e.stopPropagation();
     if(e.touches.length > NUM_VOICES ){
@@ -320,7 +306,7 @@ export default class ControlBar extends Component {
       return;
     }
     // For each finger, do the same as above in onMouseDown
-    if(this.props.timbreType === "pure"){
+    if(!this.props.timbre){
       this.synths[0].oscillator.type = "sine";
       for (let i = 0; i < e.changedTouches.length; i++) {
         let pos = getMousePos(this.canvas, e.changedTouches[i]);
@@ -424,7 +410,7 @@ export default class ControlBar extends Component {
       let audioEvent = [];
 
       // For each changed touch, do the same as onMouseMove
-      if(this.props.timbreType === "pure"){
+      if(!this.props.timbre){
         for (let i = 0; i < e.changedTouches.length; i++) {
           let pos = getMousePos(this.canvas, e.changedTouches[i]);
           if(pos.x > this.props.width){
@@ -572,7 +558,7 @@ export default class ControlBar extends Component {
         return;
       }
         // Does the same as onTouchMove, except instead of changing the voice, it deletes it.
-        if(this.props.timbreType === "complex"){
+        if(this.props.timbre){
           if(!this.props.sustain){
               this.synths[0].triggerRelease();
               this.releaseAll(true);
@@ -874,8 +860,7 @@ releaseAll(complex){
     }
 }
 
-generateComplexWeights(timbre){
-  let weightFunction;
+generateTimbre(timbre){
   this.synths[0].triggerRelease();
   this.synths[0] = new Tone.Synth();
   this.synths[0].connect(this.masterVolume);
@@ -894,13 +879,19 @@ generateComplexWeights(timbre){
     //   partials[i] /= norm;
     // }
     this.partials = partials;
-  } else  {
+  } else {
     this.synths[0].oscillator.type = timbre;
+  }
+
+  if(timbre === "sine"){
+    this.reverbVolume.mute = false;
+  } else {
+    this.reverbVolume.mute = true;
   }
 
 }
 
-sustainChangeTimbre(timbre, timbreSelection){
+sustainChangeTimbre(timbreSelection){
     let {height, width} = this.props;
     let audioEvent = [];
     let freq = this.synths[0].frequency.value;
@@ -921,7 +912,7 @@ sustainChangeTimbre(timbre, timbreSelection){
     this.synths[0] = new Tone.Synth();
     this.synths[0].connect(this.masterVolume);
     if(timbreSelection === "complex"){
-      let partials = [1];
+      let partials = [];
       for(let i = 0; i < NUM_PARTIALS; i++){
         partials.push(Math.random());
       }
@@ -935,12 +926,16 @@ sustainChangeTimbre(timbre, timbreSelection){
       //   partials[i] /= norm;
       // }
       this.partials = partials;
-      audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: "", partials: partials});
 
     } else {
       this.synths[0].oscillator.type = timbreSelection;
-      audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: timbreSelection});
     }
+    if(timbreSelection === "sine"){
+      this.reverbVolume.mute = false;
+    } else {
+      this.reverbVolume.mute = true;
+    }
+    audioEvent.push({freq: freq, volume: gain, color: 0, wavetype: timbreSelection, partials: this.partials});
     this.synths[0].volume.value = gain;
 
     if(this.state.touch || this.state.mouseSustain){

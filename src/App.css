@@ -216,3 +216,11 @@ body {
   width: 100%;
   overflow: hidden;
 }
+
+.fullscreenbutton {
+  position: absolute;
+  top: 11%;
+  right: 0%;
+  z-index: 21;
+  opacity: 0.5;
+}

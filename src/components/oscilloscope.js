@@ -159,7 +159,6 @@ export default class Oscilloscope extends Component {
                 f = x => {
                   let answer = 0;
                   for(let i = 0; i < signal.partials.length; i++){
-
                     let wavelength = 100 * this.props.height / (signal.freq*(i+1));
                     let v = wavelength / (signal.freq*(i+1));
                     let k = 2 * Math.PI / wavelength;
@@ -251,6 +250,7 @@ export default class Oscilloscope extends Component {
     this.setStyleWidthOpacity(ctx, "rgb(255, 255, 255)", '5', 1);
     // Dash Space determines the distance between white lines
     let dashSpace = 50;
+    dashSpace = 57.85;
     // Dash size determines the size of the white lines
     let dashSize = 15;
     let greatDashSize = 26;
@@ -322,27 +322,28 @@ export default class Oscilloscope extends Component {
     ctx.fillText("Air Pressure", canvasWidth*0.52, canvasHeight*0.04);
 
     // Draw the scale for the canvas
-    // this.drawScaleInfo(ctx, midPoint, canvasHeight, dashSpace);
+    this.drawScaleInfo(ctx, midPoint, canvasHeight, dashSpace);
   }
 
   // Draws the scale information for the waves canvas
   drawScaleInfo(ctx, midPoint, canvasHeight, dashSpace) {
-    let lengthScale = dashSpace * 4;
-    let offsetY = 15;
-    let offsetX = 3;
-    let lengthLittleLines = 10;
+    let lengthScale = dashSpace * 1;
+    let offsetY = 0;
+    let offsetX = 0;
+    let lengthLittleLines = 30;
+    let textOffset = 20;
 
     // Draw yellow scale
     ctx.beginPath();
-    this.setStyleWidthOpacity(ctx, "rgb(255, 233, 0)", '3', 1);
-    ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY);
-    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY);
+    this.setStyleWidthOpacity(ctx, "orange", '5', 1);
+    ctx.moveTo(midPoint.x + offsetX, canvasHeight/2);
+    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight/2);
 
-    ctx.moveTo(midPoint.x + offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
-    ctx.lineTo(midPoint.x + offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
+    ctx.moveTo(midPoint.x + offsetX, canvasHeight/2 + offsetY - lengthLittleLines / 2);
+    ctx.lineTo(midPoint.x + offsetX, canvasHeight/2 + offsetY + lengthLittleLines / 2);
 
-    ctx.moveTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY - lengthLittleLines / 2);
-    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight - offsetY + lengthLittleLines / 2);
+    ctx.moveTo(midPoint.x + lengthScale - offsetX, canvasHeight/2 + offsetY - lengthLittleLines / 2);
+    ctx.lineTo(midPoint.x + lengthScale - offsetX, canvasHeight/2 + offsetY + lengthLittleLines / 2);
 
     ctx.stroke();
     ctx.closePath();
@@ -354,7 +355,7 @@ export default class Oscilloscope extends Component {
     ctx.textAlign = 'center';
     ctx.fillStyle = 'white';
 
-    ctx.fillText('25 ms', midPoint.x + lengthScale / 2 - offsetX / 2, canvasHeight - offsetY - lengthLittleLines / 2);
+    ctx.fillText('1 ms', midPoint.x + lengthScale / 2 - offsetX / 2, canvasHeight/2 + textOffset);
 
     ctx.stroke();
     ctx.closePath();

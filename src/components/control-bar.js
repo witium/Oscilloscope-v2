@@ -178,7 +178,7 @@ export default class ControlBar extends Component {
     this.setState({mouseDown: true});
     this.props.onAudioEvent([
       {
-        freq: freqs[0],
+        freq: 1000,//freqs[0],
         volume: gain,
         color: 0,
         wavetype: this.props.timbreSelection,
@@ -466,7 +466,9 @@ export default class ControlBar extends Component {
           let gain = getGain(xPercent);
           let index = e.touches[i].identifier % NUM_VOICES;
           if(index < 0) index = NUM_VOICES + index;
-
+          if(this.props.sustain){
+            index = 0;
+          }
           if(this.props.lockFreq){
             freq = this.prevFreq[index];
             pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
@@ -566,10 +568,12 @@ export default class ControlBar extends Component {
         } else {
           this.ctx.clearRect(0, 0, width, height);
           for (let i = 0; i < e.changedTouches.length; i++) {
-
             let pos = getMousePos(this.canvas, e.changedTouches[i]);
             let index = e.changedTouches[i].identifier % NUM_VOICES;
             if(index < 0) index = NUM_VOICES + index;
+            if(this.props.sustain){
+              index = 0;
+            }
             let yPercent = 1 - pos.y / this.props.height;
             let xPercent = 1 - pos.x / this.props.width;
             let freq = this.getFreq(yPercent)[0];
@@ -577,8 +581,8 @@ export default class ControlBar extends Component {
             if(this.props.lockFreq){
               freq = this.prevFreq[index];
               pos.y = freqToIndex(freq, resolutionMax, resolutionMin, height);
-
             }
+
             if(this.props.lockAmp){
               gain = this.prevGain[index];
               pos.x = (1 - getLinearGain(gain))*width;

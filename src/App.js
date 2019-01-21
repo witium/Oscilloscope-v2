@@ -25,7 +25,8 @@ class App extends Component {
       lockAmp: false,
       showCombinedWaveInfo: false,
       combinedFrequency: 0,
-      timbreSelection: "sine"
+      timbreSelection: "sine",
+      fullscreen: false
     }
   }
 
@@ -96,6 +97,32 @@ class App extends Component {
        this.controlbar.current.sustainChangeTimbre(timbre);
     } else {
       this.controlbar.current.generateTimbre(timbre);
+    }
+  }
+
+  // Maximizes screen
+  toggleFullScreen = ()=> {
+    if ((document.fullScreenElement && document.fullScreenElement !== null) ||
+     (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      if (document.documentElement.requestFullScreen) {
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+      this.setState({fullScreen: true});
+
+    } else {
+      if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+      }
+      this.setState({fullScreen: false});
+
     }
   }
 
@@ -245,6 +272,11 @@ class App extends Component {
                }
                </div>
               </div>
+              {/* Full Screen Button */}
+              <Button icon onClick={this.toggleFullScreen} className="fullscreenbutton">
+              {!this.state.fullScreen ?  <Icon fitted name="expand" color="orange" size="large"/> :
+              <Icon fitted name="compress" color="orange" size="large"/> }
+              </Button>
           </React.Fragment>:
           <p className="flashing">Click or tap anywhere on the canvas to start the signal generator</p>
         }

@@ -189,24 +189,28 @@ class App extends Component {
               </Label>
             }
             {/*<Button.Group className="button-group-container">*/}
-              <Button
-              icon
-              className="lock-freq-button"
-              toggle
-              active={this.state.lockFreq}
-              onClick={this.handlelockFreqToggle}>
-              <Icon name={freqIcon}/>
-              Frequency
-              </Button>
-              <Button
-              icon
-              className="lock-amp-button"
-              toggle
-              active={this.state.lockAmp}
-              onClick={this.handlelockAmpToggle}>
-              <Icon name={ampIcon}/>
-              Amplitude
-              </Button>
+              <div className="lock-freq-container">
+                Frequency
+                <Button
+                icon
+                className="lock-freq-button"
+                toggle
+                active={this.state.lockFreq}
+                onClick={this.handlelockFreqToggle}>
+                <Icon name={freqIcon}/>
+                </Button>
+              </div>
+              <div className="lock-amp-container">
+                Amplitude
+                <Button
+                icon
+                className="lock-amp-button"
+                toggle
+                active={this.state.lockAmp}
+                onClick={this.handlelockAmpToggle}>
+                <Icon name={ampIcon}/>
+                </Button>
+              </div>
               <Button
               className="sustain-button"
               toggle
@@ -260,13 +264,14 @@ class App extends Component {
                      />
                    </Form.Field>
                    <Form.Field className="timbre-choice-dropdown random-button">
+                   <div onClick={(e)=>this.handleTimbreChange("complex")}>
                      <Radio
                        label='Random'
                        name='radioGroup'
                        value='complex'
                        checked={this.state.timbreSelection === 'complex'}
-                       onChange={(e)=>this.handleTimbreChange("complex")}
                      />
+                     </div>
                    </Form.Field>
                  </React.Fragment>
                }

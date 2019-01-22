@@ -178,7 +178,7 @@ export default class ControlBar extends Component {
     this.setState({mouseDown: true});
     this.props.onAudioEvent([
       {
-        freq: 1000,//freqs[0],
+        freq: freqs[0],
         volume: gain,
         color: 0,
         wavetype: this.props.timbreSelection,
@@ -869,7 +869,7 @@ generateTimbre(timbre){
   this.synths[0] = new Tone.Synth();
   this.synths[0].connect(this.masterVolume);
   if(timbre === "complex"){
-    let partials = [];
+    let partials = [1];
     for(let i = 0; i < NUM_PARTIALS; i++){
       partials.push(Math.random());
     }
@@ -916,7 +916,7 @@ sustainChangeTimbre(timbreSelection){
     this.synths[0] = new Tone.Synth();
     this.synths[0].connect(this.masterVolume);
     if(timbreSelection === "complex"){
-      let partials = [];
+      let partials = [1];
       for(let i = 0; i < NUM_PARTIALS; i++){
         partials.push(Math.random());
       }

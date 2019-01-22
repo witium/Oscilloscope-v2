@@ -68,24 +68,30 @@ canvas {
   /* padding: 8% 2%; */
 }
 
-
-.lock-freq-button {
+.lock-freq-container {
   z-index: 10;
   position: absolute;
   left: 0%;
   top: 50%;
   transform: rotate(90deg) translateX(-25%);
   transform-origin: 10% 50%;
+}
+
+.lock-freq-button {
+  margin-left: 1em!important;
 
 }
 
-.lock-amp-button {
+.lock-amp-container {
   z-index: 10;
   position: absolute;
   left: 12.5%;
   bottom: 0%;
-  border: 2px solid black;
   transform: translateX(-50%);
+}
+
+.lock-amp-button {
+  margin-left: 1em!important;
 }
 
 .lock-freq-button:hover{

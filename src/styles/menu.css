@@ -1,5 +1,6 @@
 .menu-container {
   height: 11%;
+  max-height: 11%;
 }
 
 .menu-title {

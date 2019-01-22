@@ -39,6 +39,42 @@ export default class Oscilloscope extends Component {
     // let t = 0;
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;
+    // Complex has only 1 signal in object
+    let max = 0;
+    let min = Number.MAX_SAFE_INTEGER;
+    let fundamentalMax = 1;
+    let fundamentalMin = -1;
+    let difference = 0;
+    let fundamentalDifference = 0;
+    let scale = 0;
+    if(signals[0].wavetype === "complex"){
+      let t = 0;
+      let volume = dbToLinear(signals[0].volume);
+      let wavelength = 100 * this.props.height / signals[0].freq;
+      let v = wavelength / signals[0].freq;
+      let k = 2 * Math.PI / wavelength;
+      for (let i = 0; i < numberPoints; i++) {
+        let answer = 0;
+        for(let j = 0; j < signals[0].partials.length; j++){
+          let wavelength = 100 * this.props.height / (signals[0].freq*(j+1));
+          let v = wavelength / (signals[0].freq*(j+1));
+          let k = 2 * Math.PI / wavelength;
+          answer += signals[0].partials[j]*Math.cos(k * (i + v * t));
+        }
+
+        if(answer > max){
+          max = answer;
+        }
+        if(answer < min){
+          min = answer;
+        }
+      }
+      // console.log(min, max)
+      fundamentalDifference = fundamentalMax - fundamentalMin;
+      difference = max - min;
+      scale = fundamentalDifference/difference;
+    }
+
     // console.table(signals)
 
     // // NEW CHANGE: ONLY SUM COLOR
@@ -71,49 +107,6 @@ export default class Oscilloscope extends Component {
     //     }
     //
     //   /*
-    //   let maxHeight = calculateMaximumPureSingleWave(numberPoints, sliceWidth);
-    //   let scaleProportion = calculateProportionWave(maxHeight*2);
-    //   */
-    //
-    //   // We draw the blue wave line
-    //   this.ctx.beginPath();
-    //   if(signals.length === 1){
-    //     this.setStyleWidthOpacity(this.ctx, color, '5', 1);
-    //   } else {
-    //     this.setStyleWidthOpacity(this.ctx, color, '1', 1);
-    //   }
-    //
-    //   // x starts at 0 (first point is at 0)
-    //   let x = 0;
-    //   // For each of the points that we have
-    //   let volume = dbToLinear(signal.volume);
-    //   if(isNaN(volume)){
-    //     volume = 0;
-    //   }
-    //   let wavelength = 100 * this.props.height / signal.freq;
-    //   let v = wavelength / signal.freq;
-    //   // v = 0;
-    //   let k = 2 * Math.PI / wavelength;
-    //   for (let i = 0; i < numberPoints; i++) {
-    //     let y = 0;
-    //     // Calculate the location of the point using the equation of the wave.
-    //     y+= volume * 350 * Math.cos(k * (x + v * t))
-    //     y += this.props.height / 2;
-    //
-    //     // We draw the point in the canvas
-    //     if (i === 0) {
-    //       this.ctx.moveTo(x, y);
-    //     } else {
-    //       this.ctx.lineTo(x, y);
-    //
-    //       // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
-    //       // wavesCanvasCtx.fillRect(x,y,1,1);
-    //     }
-    //     // x moves the x-distance to the right
-    //     x += sliceWidth;
-    //   }
-    //   this.ctx.stroke();
-    // }
 
     // NEW CHANGE: ONLY SUM COLOR
     // if(signals.length > 1){
@@ -164,7 +157,7 @@ export default class Oscilloscope extends Component {
                     let k = 2 * Math.PI / wavelength;
                     answer += signal.partials[i]*Math.cos(k * (x + v * t));
                   }
-                  return answer;
+                  return (answer + Math.abs(min))/difference * fundamentalDifference + min;
                 }
               break;
               default:
@@ -249,8 +242,9 @@ export default class Oscilloscope extends Component {
     ctx.beginPath();
     this.setStyleWidthOpacity(ctx, "rgb(255, 255, 255)", '5', 1);
     // Dash Space determines the distance between white lines
-    let dashSpace = 50;
-    dashSpace = 57.85;
+    let dashSpace = 57.85;
+
+
     // Dash size determines the size of the white lines
     let dashSize = 15;
     let greatDashSize = 26;

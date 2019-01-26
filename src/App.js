@@ -26,7 +26,9 @@ class App extends Component {
       showCombinedWaveInfo: false,
       combinedFrequency: 0,
       timbreSelection: "sine",
-      fullscreen: false
+      fullscreen: false,
+      rotateIcon: false,
+      rotateIcon2: false,
     }
   }
 
@@ -92,11 +94,17 @@ class App extends Component {
   }
 
   handleTimbreChange = timbre => {
-    this.setState({timbre: timbre !== "sine", timbreSelection: timbre});
+    this.setState({timbre: timbre !== "sine", timbreSelection: timbre, rotateIcon: false, rotateIcon2: false});
     if(this.state.sustain){
        this.controlbar.current.sustainChangeTimbre(timbre);
     } else {
       this.controlbar.current.generateTimbre(timbre);
+    }
+    if(this.state.timbreSelection !== "sine" && timbre === "complex"){
+      this.setState({rotateIcon: true, rotateIcon2: false})
+      if(this.state.timbreSelection === "complex" && this.state.rotateIcon){
+          this.setState({rotateIcon: false, rotateIcon2: true})
+      }
     }
   }
 
@@ -134,7 +142,8 @@ class App extends Component {
 
   render() {
       // let backgroundColor = "yellow";
-      let pureColor, complexColor, freqIcon, ampIcon;
+      let pureColor, complexColor, freqIcon, ampIcon, generateClass;
+
       if(this.state.timbre){
         pureColor = "";
         complexColor = "red";
@@ -151,6 +160,13 @@ class App extends Component {
         ampIcon = "lock"
       } else {
         ampIcon = "unlock"
+      }
+      if(this.state.rotateIcon){
+        generateClass = "generate-icon rotate-icon"
+      } else if(this.state.rotateIcon2) {
+        generateClass = "generate-icon rotate-icon2";
+      } else {
+        generateClass = "generate-icon";
       }
 
     return (
@@ -264,13 +280,14 @@ class App extends Component {
                      />
                    </Form.Field>
                    <Form.Field className="timbre-choice-dropdown random-button">
-                   <div onClick={(e)=>this.handleTimbreChange("complex")}>
+                   <div onClick={(e)=>this.handleTimbreChange("complex")} className="random-button-container">
                      <Radio
                        label='Random'
                        name='radioGroup'
                        value='complex'
                        checked={this.state.timbreSelection === 'complex'}
                      />
+                     <Icon name="sync alternate" size="small" className={generateClass}/>
                      </div>
                    </Form.Field>
                  </React.Fragment>

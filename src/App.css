@@ -65,7 +65,12 @@ canvas {
 }
 .random-button {
   top: -400%;
+
   /* padding: 8% 2%; */
+}
+
+.random-button-container {
+  cursor: pointer;
 }
 
 .lock-freq-container {
@@ -155,7 +160,7 @@ canvas {
 .timbre-button {
   border-radius: 0px!important;
 
-  width: 7em;
+  width: 9em;
   margin-right: 0px!important;
 }
 
@@ -171,6 +176,42 @@ canvas {
 .timbre-complex {
   border-top-right-radius: .28571429rem!important;
   border-bottom-right-radius: .28571429rem!important;
+}
+
+.generate-icon {
+  z-index: 15;
+  margin-left: 1em!important;
+}
+
+.rotate-icon {
+  -webkit-animation: rotate1 1s 1; /* Safari 4+ */
+    -moz-animation:    rotate1 1s 1; /* Fx 5+ */
+    -o-animation:      rotate1 1s 1; /* Opera 12+ */
+    animation:         rotate1 1s 1; /* IE 10+, Fx 29+ */
+}
+
+.rotate-icon2 {
+  -webkit-animation: rotate2 3s 1; /* Safari 4+ */
+    -moz-animation:    rotate2 1s 1; /* Fx 5+ */
+    -o-animation:      rotate2 1s 1; /* Opera 12+ */
+    animation:         rotate2 1s 1; /* IE 10+, Fx 29+ */
+}
+
+@keyframes rotate1 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate2 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .combined-wave-title {

@@ -157,7 +157,8 @@ export default class Oscilloscope extends Component {
                     let k = 2 * Math.PI / wavelength;
                     answer += signal.partials[i]*Math.cos(k * (x + v * t));
                   }
-                  return (answer + Math.abs(min))/difference * fundamentalDifference + min;
+                  return (answer - min ) / (Math.abs(max - min))*2 - 1;
+                  //return (answer + Math.abs(min))/difference * fundamentalDifference + min;
                 }
               break;
               default:

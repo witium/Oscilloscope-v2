@@ -886,7 +886,24 @@ generateTimbre(timbre){
   } else {
     this.synths[0].oscillator.type = timbre;
   }
-
+  switch (timbre) {
+    case "square":
+    this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+      this.props.context.currentTime+RAMPVALUE);
+      break;
+    case "sawtooth":
+    this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+      this.props.context.currentTime+RAMPVALUE);
+      break;
+    case "complex":
+    this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+      this.props.context.currentTime+RAMPVALUE);
+      break;
+    case "sine":
+      this.masterVolume.volume.exponentialRampToValueAtTime(0,
+        this.props.context.currentTime+RAMPVALUE);
+      break;
+  }
   if(timbre === "sine"){
     this.reverbVolume.mute = false;
   } else {
@@ -915,6 +932,25 @@ sustainChangeTimbre(timbreSelection){
     this.synths[0].triggerRelease();
     this.synths[0] = new Tone.Synth();
     this.synths[0].connect(this.masterVolume);
+
+    switch (timbreSelection) {
+      case "square":
+      this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+        this.props.context.currentTime+RAMPVALUE);
+        break;
+      case "sawtooth":
+      this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+        this.props.context.currentTime+RAMPVALUE);
+        break;
+      case "complex":
+      this.masterVolume.volume.exponentialRampToValueAtTime(-10,
+        this.props.context.currentTime+RAMPVALUE);
+        break;
+      case "sine":
+        this.masterVolume.volume.exponentialRampToValueAtTime(0,
+          this.props.context.currentTime+RAMPVALUE);
+        break;
+    }
     if(timbreSelection === "complex"){
       let partials = [1];
       for(let i = 0; i < NUM_PARTIALS; i++){
@@ -936,6 +972,7 @@ sustainChangeTimbre(timbreSelection){
     }
     if(timbreSelection === "sine"){
       this.reverbVolume.mute = false;
+
     } else {
       this.reverbVolume.mute = true;
     }

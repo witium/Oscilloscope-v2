@@ -125,6 +125,10 @@ export default class ControlBar extends Component {
     }
     this.ctx.clearRect(0, 0, this.props.width, this.props.height); // Clears canvas for redraw of label
     this.renderCanvas();
+    /* NOTE: Here's where labels for the harmonics will go.
+        1. Prop to detect complex or pure is timbre/timbreSelection
+        2. 
+    */
     this.label(freq, pos.x, pos.y, 0); // Labels the point
     this.setState({mouseDown: true});
     this.props.onAudioEvent([

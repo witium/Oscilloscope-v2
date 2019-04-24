@@ -175,25 +175,27 @@ class App extends Component {
         {this.state.started ?
           <React.Fragment>
             <ControlBar
-            width={this.state.width/4}
-            height={this.state.height}
-            handleResize={this.handleResize}
-            context={audioContext}
-            onAudioEvent={this.onAudioEvent}
-            sustain={this.state.sustain}
-            timbre = {this.state.timbre}
-            timbreSelection={this.state.timbreSelection}
-            lockFreq={this.state.lockFreq}
-            lockAmp={this.state.lockAmp}
-            ref={this.controlbar}/>
+              width={this.state.width/4}
+              height={this.state.height}
+              handleResize={this.handleResize}
+              context={audioContext}
+              onAudioEvent={this.onAudioEvent}
+              sustain={this.state.sustain}
+              timbre = {this.state.timbre}
+              timbreSelection={this.state.timbreSelection}
+              lockFreq={this.state.lockFreq}
+              lockAmp={this.state.lockAmp}
+              ref={this.controlbar}
+            />
             <SignalGenerator
-            width={3*this.state.width/4}
-            height={this.state.height}
-            handleResize={this.handleResize}
-            renderSignals={this.state.renderSignals}
-            drawCombinedInfo={this.drawCombinedInfo}
-            restart={this.restart}
-            ref={this.signalGenerator}/>
+              width={3*this.state.width/4}
+              height={this.state.height}
+              handleResize={this.handleResize}
+              renderSignals={this.state.renderSignals}
+              drawCombinedInfo={this.drawCombinedInfo}
+              restart={this.restart}
+              ref={this.signalGenerator}
+            />
             {this.state.showCombinedWaveInfo &&
               <Label className="combined-wave-info">
                 <div className="combined-wave-title">Frequency</div>

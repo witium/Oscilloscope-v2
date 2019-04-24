@@ -80,6 +80,7 @@ canvas {
   top: 50%;
   transform: rotate(90deg) translateX(-25%);
   transform-origin: 10% 50%;
+  user-select: none;
 }
 
 .lock-freq-button {
@@ -93,6 +94,7 @@ canvas {
   left: 12.5%;
   bottom: 0%;
   transform: translateX(-50%);
+  user-select: none;
 }
 
 .lock-amp-button {

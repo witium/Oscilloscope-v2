@@ -5,14 +5,14 @@ import { Button, Icon, Label, Form, Radio } from 'semantic-ui-react'
 
 import MainMenu from './components/menu';
 import ControlBar from './components/control-bar'
-import Oscilloscope from './components/oscilloscope'
+import SignalGenerator from './components/signal-generator'
 
 let audioContext = null;
 
 class App extends Component {
   constructor(){
     super();
-    this.oscilloscope = React.createRef();
+    this.signalGenerator = React.createRef();
     this.controlbar = React.createRef();
 
     this.state = {
@@ -37,7 +37,7 @@ class App extends Component {
     this.setState({width: window.innerWidth, height: window.innerHeight});
   }
 
-  startOscilloscope = () => {
+  start = () => {
     if (!this.state.started){
       audioContext = new(window.AudioContext || window.webkitAudioContext)();
       this.setState({started: true});
@@ -46,7 +46,7 @@ class App extends Component {
 
   onAudioEvent = (signals) =>{
 
-    this.oscilloscope.current.renderCanvas(signals)
+    this.signalGenerator.current.renderCanvas(signals)
   }
 
 
@@ -170,7 +170,7 @@ class App extends Component {
       }
 
     return (
-      <div className="App" onClick={this.startOscilloscope}>
+      <div className="App" onClick={this.start}>
         <MainMenu />
         {this.state.started ?
           <React.Fragment>
@@ -186,14 +186,14 @@ class App extends Component {
             lockFreq={this.state.lockFreq}
             lockAmp={this.state.lockAmp}
             ref={this.controlbar}/>
-            <Oscilloscope
+            <SignalGenerator
             width={3*this.state.width/4}
             height={this.state.height}
             handleResize={this.handleResize}
             renderSignals={this.state.renderSignals}
             drawCombinedInfo={this.drawCombinedInfo}
             restart={this.restart}
-            ref={this.oscilloscope}/>
+            ref={this.signalGenerator}/>
             {this.state.showCombinedWaveInfo &&
               <Label className="combined-wave-info">
                 <div className="combined-wave-title">Frequency</div>

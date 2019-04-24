@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import "../styles/oscilloscope.css";
+import "../styles/signal-generator.css";
 import {dbToLinear} from "../util/conversions";
 
 import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
 
-export default class Oscilloscope extends Component {
+export default class SignalGenerator extends Component {
   constructor(props) {
     super(props);
 
@@ -29,7 +29,6 @@ export default class Oscilloscope extends Component {
 
 
   handleResize = () =>{
-    console.log("HEY")
     this.props.handleResize();
     this.drawPureWavesCanvas();
   }
@@ -69,7 +68,6 @@ export default class Oscilloscope extends Component {
           min = answer;
         }
       }
-      // console.log(min, max)
       fundamentalDifference = fundamentalMax - fundamentalMin;
       difference = max - min;
       scale = fundamentalDifference/difference;
@@ -186,11 +184,8 @@ export default class Oscilloscope extends Component {
         if (i === 0) {
           this.ctx.moveTo(x, y);
         } else {
-          // if(i == 4022) console.log(y)
           this.ctx.lineTo(x, y);
 
-          // wavesCanvasCtx.fillStyle = WAVECOLORTOTAL;
-          // wavesCanvasCtx.fillRect(x,y,1,1);
         }
         // x moves the x-distance to the right
         x += sliceWidth;
@@ -370,7 +365,7 @@ export default class Oscilloscope extends Component {
   };
 
 
-  startOscilloscope = () => {
+  startSignalGenerator = () => {
     this.setState({
       isStarted: true,
     })
@@ -378,8 +373,8 @@ export default class Oscilloscope extends Component {
 
   render() {
     return (
-      <div onClick={this.startOscilloscope}>
-        <canvas className="oscilloscope-canvas" width={this.props.width} height={this.props.height} ref={(c) => {this.canvas = c;}}/>
+      <div onClick={this.startSignalGenerator}>
+        <canvas className="signal-generator-canvas" width={this.props.width} height={this.props.height} ref={(c) => {this.canvas = c;}}/>
       </div>
     );
   }

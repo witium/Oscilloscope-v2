@@ -5,6 +5,8 @@ import generateScale from '../util/generateScale';
 
 import {getFreq, getGain, freqToIndex, getMousePos, logspace, getLinearGain} from "../util/conversions";
 import {WAVECOLOR1, WAVECOLOR2, WAVECOLOR3, WAVECOLOR4, WAVECOLOR5, WAVECOLOR6, WAVECOLORTOTAL} from "../util/colors";
+import { getHarmonicFreq } from '../util/harmonics';
+
 const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
 const NUM_PARTIALS = 5;
@@ -127,9 +129,15 @@ export default class ControlBar extends Component {
     this.renderCanvas();
     /* NOTE: Here's where labels for the harmonics will go.
         1. Prop to detect complex or pure is timbre/timbreSelection
-        2. 
+        2.  
     */
     this.label(freq, pos.x, pos.y, 0); // Labels the point
+    // Labels for harmonics of complex waves
+    if (this.props.timbre) {
+      // Log the harmonics
+      console.log(`Harmonics for ${this.props.timbreSelection}: `, getHarmonicFreq(freq, xPercent, 10, this.props.timbreSelection));
+    }
+
     this.setState({mouseDown: true});
     this.props.onAudioEvent([
       {

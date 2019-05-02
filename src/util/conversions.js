@@ -75,7 +75,7 @@ function calculateNewMin(y, A0, newYPercent, zoomMin, zoomMax){
     return newMin;
 }
 
-// Inverse function to obtain an index (xPercent for the screen) from the given frequency
+// Inverse function to obtain an index (yPercent for the screen) from the given frequency
 function freqToIndex(freq, max, min, height) {
   let logResolution = Math.log(max / min);
   let x = Math.log(freq / min) / logResolution;

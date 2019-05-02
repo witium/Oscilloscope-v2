@@ -135,7 +135,8 @@ export default class ControlBar extends Component {
     // Labels for harmonics of complex waves
     if (this.props.timbre) {
       // Log the harmonics
-      console.log(`Harmonics for ${this.props.timbreSelection}: `, getHarmonicFreq(freq, xPercent, 10, this.props.timbreSelection));
+      console.log(`Harmonics for ${this.props.timbreSelection} and ${xPercent} `, getHarmonicFreq(freq, xPercent, 10, this.props.timbreSelection));
+
     }
 
     this.setState({mouseDown: true});

@@ -142,12 +142,7 @@ export default class ControlBar extends Component {
     this.label (freq, pos.x, pos.y, 0); // Labels the point
     // Labels for harmonics of complex waves
     if (this.props.timbre) {
-      // Log the harmonics
-      console.log (
-        `Harmonics for ${this.props.timbreSelection} and ${xPercent} `,
-        getHarmonicFreq (freq, xPercent, 10, this.props.timbreSelection)
-      );
-
+      
       // Convert all the amplitude (xPercent) back to positions on the screen so that they can be plotted
       const harmonicValues = getHarmonicFreq (
         freq,
@@ -156,13 +151,22 @@ export default class ControlBar extends Component {
         this.props.timbreSelection
       );
 
-      const harmonicGain = harmonicValues.map (
-        harmonic => (1 - harmonic.amplitude) * this.props.width
-      );
-      const harmonicFreq = harmonicValues.map (harmonic => {
-        let newYPercent = freqToIndex (harmonic); // Convert frequency to the index (yPercent) on the screen
-        return (1 - newYPercent) * this.props.height; // Convert the index to the actual position where the harmonics should be plotted
+      console.log('Log the harmonic values: ', harmonicValues);
+      
+
+      const harmonicPositions = harmonicValues.map((harmonic) => {
+        const { height, width } = this.props;
+        let x = (1 - harmonic.amplitude) * width;
+        let y = freqToIndex(harmonic.frequency, resolutionMax, resolutionMin, height); 
+        return {
+         x : x,
+         y : y 
+        }
       });
+      
+      for (let h of harmonicPositions) {
+        this.label(null, h.x, h.y, 2, "harmonic");
+      }
     }
 
     this.setState ({mouseDown: true});

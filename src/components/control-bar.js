@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import random from 'lodash.random';
+
 import '../styles/control-bar.css';
 import Tone from 'tone';
 import generateScale from '../util/generateScale';
@@ -165,7 +167,8 @@ export default class ControlBar extends Component {
       });
       
       for (let h of harmonicPositions) {
-        this.label(null, h.x, h.y, 2, "harmonic");
+        const color = random(1, 6);
+        this.label(null, h.x, h.y, color, "harmonic");
       }
     }
 

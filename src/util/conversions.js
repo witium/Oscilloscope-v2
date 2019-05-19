@@ -90,4 +90,4 @@ function logspace(start, stop, n, N) {
   return start * Math.pow(stop / start, n / (N - 1));
 }
 
-export {convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear, getLinearGain}
+export {getHarmonicGain, convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear, getLinearGain}

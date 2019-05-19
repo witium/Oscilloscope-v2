@@ -8,6 +8,7 @@ import generateScale from '../util/generateScale';
 import {
   getFreq,
   getGain,
+  getHarmonicGain,
   freqToIndex,
   getMousePos,
   logspace,
@@ -22,7 +23,7 @@ import {
   WAVECOLOR6,
   WAVECOLORTOTAL,
 } from '../util/colors';
-import {getHarmonicFreq} from '../util/harmonics';
+import {getHarmonicWeights} from '../util/harmonics';
 
 const NUM_VOICES = 6;
 const RAMPVALUE = 0.2;
@@ -146,26 +147,35 @@ export default class ControlBar extends Component {
     if (this.props.timbre) {
       
       // Convert all the amplitude (xPercent) back to positions on the screen so that they can be plotted
-      const harmonicValues = getHarmonicFreq (
-        freq,
-        xPercent,
+      const weights = getHarmonicWeights (
         10,
         this.props.timbreSelection
       );
 
-      console.log('Log the harmonic values: ', harmonicValues);
+      console.log('Log the harmonic weights: ', weights);
       
+      let harmonicValues = []
+      for (let i = 0; i < weights.length; i++ ) {
+        harmonicValues.push({
+          freq: (freq) * (i+1),
+          db: weights[i],
+        })  
+      }
+
+      console.log('Log the harmonic dB values: ', harmonicValues);
+
 
       const harmonicPositions = harmonicValues.map((harmonic) => {
         const { height, width } = this.props;
-        let x = (1 - harmonic.amplitude) * width;
-        let y = freqToIndex(harmonic.frequency, resolutionMax, resolutionMin, height); 
+        let x = pos.x * (harmonic.db);
+        let y = freqToIndex(harmonic.freq, resolutionMax, resolutionMin, height); 
         return {
          x : x,
          y : y 
         }
       });
       
+      console.log('Log the harmonic positions: ', harmonicPositions);
       for (let h of harmonicPositions) {
         const color = random(1, 6);
         this.label(null, h.x, h.y, color, "harmonic");

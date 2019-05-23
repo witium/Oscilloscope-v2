@@ -1,7 +1,6 @@
 {
   "name": "SignalGenerator",
   "version": "0.1.0",
-  "homepage": "http://listeningtowaves.github.io/SignalGenerator",
   "private": true,
   "dependencies": {
     "gh-pages": "^2.0.1",

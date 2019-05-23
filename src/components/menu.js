@@ -13,7 +13,11 @@ class MainMenu extends Component {
   switchApplication = (e, data) => {
     if (data.value === "Spectrogram") {
       // this.props.history.push('/Spectrogram');
-      window.location.href = '/Spectrogram';
+      window.location.href = 'https://spectrogram.sciencemusic.org/';
+    }
+    if (data.value === "Oscilloscope") {
+      // this.props.history.push('/Spectrogram');
+      window.location.href = 'https://oscilloscope.sciencemusic.org/';
     }
   }
 

@@ -127,9 +127,11 @@ export default class ControlBar extends Component {
 
     let harmonicValues = []
     for (let i = 0; i < weights.length; i++) {
+      const color = random(1, 6);
       harmonicValues.push({
         freq: (freq) * (i + 1),
         db: weights[i],
+        color: color,
       })
     }
 
@@ -142,14 +144,14 @@ export default class ControlBar extends Component {
       let y = freqToIndex(harmonic.freq, resolutionMax, resolutionMin, height);
       return {
         x: x,
-        y: y
+        y: y,
+        color: harmonic.color
       }
     });
 
     console.log('Log the harmonic positions: ', harmonicPositions);
     for (let h of harmonicPositions) {
-      const color = random(1, 6);
-      this.label(null, h.x, h.y, color, "harmonic");
+      this.label(null, h.x, h.y, h.color, "harmonic");
     }
 
     return harmonicValues;      // return the harmonic values to render the waves
@@ -189,7 +191,7 @@ export default class ControlBar extends Component {
         return {
           freq: signal.freq,
           volume: getHarmonicGain(signal.db),
-          color: 0,
+          color: signal.color, 
           wavetype: 'sine',       // Harmonics are sine waves
           partials: []            // Leave empty as these are not complex waves
         }

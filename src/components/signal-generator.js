@@ -52,38 +52,38 @@ export default class SignalGenerator extends Component {
     // for (let signal of signals){
     //
     //   // We get the x-distance between each point by dividing the total width by the number of points
-    //   let color;
-    //   switch (signal.color) {
-    //     case 0:
-    //       color = WAVECOLOR1;
-    //       break;
-    //     case 1:
-    //       color = WAVECOLOR2;
-    //       break;
-    //     case 2:
-    //       color = WAVECOLOR3;
-    //       break;
-    //     case 3:
-    //       color = WAVECOLOR4;
-    //       break;
-    //     case 4:
-    //       color = WAVECOLOR5;
-    //       break;
-    //     case 5:
-    //       color = WAVECOLOR6;
-    //       break;
-    //     default:
-    //       color = WAVECOLOR1;
-    //       break;
-    //     }
-    //
+    let color;
+    switch (signal.color) {
+      case 0:
+        color = WAVECOLOR1;
+        break;
+      case 1:
+        color = WAVECOLOR2;
+        break;
+      case 2:
+        color = WAVECOLOR3;
+        break;
+      case 3:
+        color = WAVECOLOR4;
+        break;
+      case 4:
+        color = WAVECOLOR5;
+        break;
+      case 5:
+        color = WAVECOLOR6;
+        break;
+      default:
+        color = WAVECOLOR1;
+        break;
+      }
+    
     //   /*
 
     // NEW CHANGE: ONLY SUM COLOR
     // if(signals.length > 1){
       // Draw combined wave
       this.ctx.beginPath();
-      this.setStyleWidthOpacity(this.ctx, WAVECOLOR1, '5', 1);
+      this.setStyleWidthOpacity(this.ctx, color, '5', 1);
 
       // x starts at 0 (first point is at 0)
       let x = 0;

@@ -36,6 +36,21 @@
   transition-property: color, background-color;
 }
 
+.app-bar-dropdown-container {
+  padding-left: 0px !important;
+  z-index: 40;
+}
+
+.app-bar-dropdown {
+  font-size: 1.25rem;
+  min-width: 13rem !important;
+  border: none !important;
+  min-height: 1rem !important;
+  user-select: none;
+  font-variant: small-caps;
+  font-weight: 700 !important;
+}
+
 .function-switch-button:hover {
   outline: none;
   cursor: pointer;

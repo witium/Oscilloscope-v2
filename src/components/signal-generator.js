@@ -33,8 +33,158 @@ export default class SignalGenerator extends Component {
     this.drawPureWavesCanvas();
   }
 
-  renderCanvas = (signals) =>{
+  renderHarmonicWaves = (signal) => {
+    // let t = 0;
+    const numberPoints = 2048 * 16;
+    const sliceWidth = this.props.width / numberPoints;
+    // Complex has only 1 signal in object
+    let max = 0;
+    let min = Number.MAX_SAFE_INTEGER;
+    let fundamentalMax = 1;
+    let fundamentalMin = -1;
+    let difference = 0;
+    let fundamentalDifference = 0;
+    let scale = 0;
+
+    // console.table(signals)
+
+    // // NEW CHANGE: ONLY SUM COLOR
+    // for (let signal of signals){
+    //
+    //   // We get the x-distance between each point by dividing the total width by the number of points
+    //   let color;
+    //   switch (signal.color) {
+    //     case 0:
+    //       color = WAVECOLOR1;
+    //       break;
+    //     case 1:
+    //       color = WAVECOLOR2;
+    //       break;
+    //     case 2:
+    //       color = WAVECOLOR3;
+    //       break;
+    //     case 3:
+    //       color = WAVECOLOR4;
+    //       break;
+    //     case 4:
+    //       color = WAVECOLOR5;
+    //       break;
+    //     case 5:
+    //       color = WAVECOLOR6;
+    //       break;
+    //     default:
+    //       color = WAVECOLOR1;
+    //       break;
+    //     }
+    //
+    //   /*
+
+    // NEW CHANGE: ONLY SUM COLOR
+    // if(signals.length > 1){
+      // Draw combined wave
+      this.ctx.beginPath();
+      this.setStyleWidthOpacity(this.ctx, WAVECOLOR1, '5', 1);
+
+      // x starts at 0 (first point is at 0)
+      let x = 0;
+      // For each of the points that we have
+
+      // let volume = dbToLinear(signal.volume);
+      let volume = 1;
+      if(isNaN(volume)){
+        volume = 0;
+      }
+      let t = 0;
+      //let wavelength = 100 * this.props.height / signal.freq;
+      //let v = wavelength / signal.freq;
+      //let k = 2 * Math.PI / wavelength;
+      for (let i = 0; i < numberPoints; i++) {
+        let y = 0;
+          //for (let signal of signals){
+            let wavelength = 100 * this.props.height / signal.freq;
+            let v = wavelength / signal.freq;
+            let k = 2 * Math.PI / wavelength;
+            let volume = dbToLinear(signal.volume);
+            let f;
+            switch (signal.wavetype) {
+              case "sine":
+                f = x => Math.cos(k * (x + v * t));
+                break;
+              case "square":
+                f = x => (Math.cos(k * (x + v * t)) > 0) ? 1 : -1;
+                break;
+              case "sawtooth":
+                f = x => 2 * (x / wavelength - Math.floor(0.5 +  x / wavelength));
+                break;
+              case "triangle":
+                f = x => 4 / wavelength*(Math.abs(x % wavelength - wavelength / 2) - wavelength / 4);
+                break;
+              case "complex":
+                f = x => {
+                  let answer = 0;
+                  for(let i = 0; i < signal.partials.length; i++){
+                    let wavelength = 100 * this.props.height / (signal.freq*(i+1));
+                    let v = wavelength / (signal.freq*(i+1));
+                    let k = 2 * Math.PI / wavelength;
+                    answer += signal.partials[i]*Math.cos(k * (x + v * t));
+                  }
+                  return (answer - min ) / (Math.abs(max - min))*2 - 1;
+                  //return (answer + Math.abs(min))/difference * fundamentalDifference + min;
+                }
+              break;
+              default:
+                f = val => Infinity;
+            }
+            if(isNaN(volume)){
+              volume = 0;
+            }
+            y += (volume * 350 * f(x));
+        //}
+        //let y = 0;
+        // Calculate the location of the point using the equation of the wave.
+        //y+= volume * 350 * Math.cos(k * (x + v * t))
+        // if (signal.volume < 0) {
+        //   y += (0 * 350 * Math.cos(k * (x + v * t)));
+        // } else {
+        //   y += (amplitude[0] * 350 * Math.cos(k * (x + v * t)));
+        // }
+
+        // y *= scaleProportion;
+
+        y += this.props.height / 2;
+
+        // We draw the point in the canvas
+        if (i === 0) {
+          this.ctx.moveTo(x, y);
+        } else {
+          this.ctx.lineTo(x, y);
+
+        }
+        // x moves the x-distance to the right
+        x += sliceWidth;
+      }
+      this.ctx.stroke();
+
+    //   // Find min freq and Draw axes
+    //   this.props.drawCombinedInfo(signals.reduce((total, signal)=>{
+    //     return (signal.freq < total) ? signal.freq: total;
+    //   }, Infinity));
+    // // }
+  }
+
+  renderCanvas = (signals, harmonicSignals, timbre) => {
     this.drawPureWavesCanvas();
+
+    /* Draw the harmonic waves */
+    if (timbre) {
+      for (let signal of harmonicSignals) {
+        this.renderHarmonicWaves(signal);
+      }
+    }
+
+
+    /* Draw the actual wave */
+
     // let t = 0;
     const numberPoints = 2048 * 16;
     const sliceWidth = this.props.width / numberPoints;

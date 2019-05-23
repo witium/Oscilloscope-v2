@@ -44,10 +44,11 @@ class App extends Component {
     }
   }
 
-  onAudioEvent = (signals) =>{
+  onAudioEvent = (signals, harmonicSignals, timbre) =>{
 
-    this.signalGenerator.current.renderCanvas(signals)
+    this.signalGenerator.current.renderCanvas(signals, harmonicSignals, timbre)
   }
+
 
 
   // handleTimbrePure = () =>{

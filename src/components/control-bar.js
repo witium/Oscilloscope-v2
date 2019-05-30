@@ -50,6 +50,9 @@ export default class ControlBar extends Component {
       feedback: false,
       amOn: false,
       fmOn: false,
+      harmonics: {            // Colors of the harmonics
+        colors: []
+      }
     };
   }
 
@@ -127,6 +130,7 @@ export default class ControlBar extends Component {
 
     let harmonicValues = []
     for (let i = 0; i < weights.length; i++) {
+      // Store the current colors of the harmonics in the state
       const color = random(1, 6);
       harmonicValues.push({
         freq: (freq) * (i + 1),
@@ -184,26 +188,31 @@ export default class ControlBar extends Component {
     */
     this.label(freq, pos.x, pos.y, 0); // Labels the point
     // Labels for harmonics of complex waves
-    let harmonicSignals;
+    let harmonicSignals, harmonicColors;
     if (this.props.timbre) {
       harmonicSignals = this.plotHarmonicPoints(freq, pos, 5);
+
+      // Declare the colors array that needs to be pushed onto the state
+      harmonicColors = [];
+
       harmonicSignals = harmonicSignals.map(signal => {
+        harmonicColors.push(signal.color);
         return {
           freq: signal.freq,
           volume: getHarmonicGain(signal.db),
-          color: signal.color, 
+          color: signal.color,
           wavetype: 'sine',       // Harmonics are sine waves
           partials: []            // Leave empty as these are not complex waves
         }
       });
     }
 
-    this.setState({ mouseDown: true });
+    this.setState({ mouseDown: true, harmonics: {colors: harmonicColors} });
     this.props.onAudioEvent([
       {
         freq: freq,
         volume: gain,
-        color: 0,
+        color: this.state.colors,
         wavetype: this.props.timbreSelection,
         partials: this.partials,
       },
@@ -263,6 +272,22 @@ export default class ControlBar extends Component {
       if (this.props.noteLinesOn) {
         // this.renderNoteLines();
       }
+
+      let harmonicSignals;
+      if (this.props.timbre) {
+        harmonicSignals = this.plotHarmonicPoints(freq, pos, 5);
+        harmonicSignals = harmonicSignals.map(signal => {
+          return {
+            freq: signal.freq,
+            volume: getHarmonicGain(signal.db),
+            color: signal.color,
+            wavetype: 'sine',       // Harmonics are sine waves
+            partials: []            // Leave empty as these are not complex waves
+          }
+        });
+      }
+
+
       this.props.onAudioEvent([
         {
           freq: freq,
@@ -271,7 +296,7 @@ export default class ControlBar extends Component {
           wavetype: this.props.timbreSelection,
           partials: this.partials,
         },
-      ]);
+      ], harmonicSignals, this.props.timbre);
     }
   }
 

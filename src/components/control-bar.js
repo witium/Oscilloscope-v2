@@ -119,7 +119,7 @@ export default class ControlBar extends Component {
     this.renderCanvas();
   };
 
-  plotHarmonicPoints(freq, pos, harmonicNumbers) {
+  plotHarmonicPoints(freq, pos, harmonicNumbers, colors) {
     // Convert all the amplitude (xPercent) back to positions on the screen so that they can be plotted
     const weights = getHarmonicWeights(
       harmonicNumbers,
@@ -128,10 +128,17 @@ export default class ControlBar extends Component {
 
     console.log('Log the harmonic weights: ', weights);
 
+    let colorsSustain = colors.length > 0 ? true : false;
+
     let harmonicValues = []
     for (let i = 0; i < weights.length; i++) {
       // Store the current colors of the harmonics in the state
-      const color = random(1, 6);
+      let color;
+      if (colorsSustain) {
+        color = colors[i];
+      } else {
+        color = random(1, 6);
+      }
       harmonicValues.push({
         freq: (freq) * (i + 1),
         db: weights[i],
@@ -190,7 +197,7 @@ export default class ControlBar extends Component {
     // Labels for harmonics of complex waves
     let harmonicSignals, harmonicColors;
     if (this.props.timbre) {
-      harmonicSignals = this.plotHarmonicPoints(freq, pos, 5);
+      harmonicSignals = this.plotHarmonicPoints(freq, pos, 5, []);
 
       // Declare the colors array that needs to be pushed onto the state
       harmonicColors = [];
@@ -212,7 +219,7 @@ export default class ControlBar extends Component {
       {
         freq: freq,
         volume: gain,
-        color: this.state.colors,
+        color: this.state.harmonics.colors,
         wavetype: this.props.timbreSelection,
         partials: this.partials,
       },
@@ -275,7 +282,8 @@ export default class ControlBar extends Component {
 
       let harmonicSignals;
       if (this.props.timbre) {
-        harmonicSignals = this.plotHarmonicPoints(freq, pos, 5);
+        let { colors } = this.state.harmonics;
+        harmonicSignals = this.plotHarmonicPoints(freq, pos, 5, colors);
         harmonicSignals = harmonicSignals.map(signal => {
           return {
             freq: signal.freq,
@@ -292,7 +300,7 @@ export default class ControlBar extends Component {
         {
           freq: freq,
           volume: gain,
-          color: 0,
+          color: 0,     // Colors should sustain through the mouse move
           wavetype: this.props.timbreSelection,
           partials: this.partials,
         },

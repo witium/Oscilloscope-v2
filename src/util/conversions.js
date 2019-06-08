@@ -90,4 +90,15 @@ function logspace(start, stop, n, N) {
   return start * Math.pow(stop / start, n / (N - 1));
 }
 
-export {getHarmonicGain, convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear, getLinearGain}
+function dbToPixel(db, min, max) {
+  // 0 -> 100 on the control-bar is equivalent to -30dB -> 0dB 
+  if (db <= min) {
+    return 0;
+  }
+  if (db >= max) {
+    return 1;
+  }
+  return 1 - (db/min);  
+}
+
+export {dbToPixel, getHarmonicGain, convertToLog, convertToLinear, getMousePos, getFreq, getGain, calculateNewMax, calculateNewMin, freqToIndex, logspace, dbToLinear, getLinearGain}

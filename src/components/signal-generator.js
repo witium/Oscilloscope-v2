@@ -175,12 +175,12 @@ export default class SignalGenerator extends Component {
   renderCanvas = (signals, harmonicSignals, timbre) => {
     this.drawPureWavesCanvas();
 
-    /* Draw the harmonic waves */
-    if (timbre) {
-      for (let signal of harmonicSignals) {
-        this.renderHarmonicWaves(signal);
-      }
-    }
+    // /* Draw the harmonic waves */
+    // if (timbre) {
+    //   for (let signal of harmonicSignals) {
+    //     this.renderHarmonicWaves(signal);
+    //   }
+    // }
 
 
     /* Draw the actual wave */
